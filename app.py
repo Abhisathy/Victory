@@ -4,4 +4,4 @@ from flask import Flask, render_template, request, session, flash, url_for, redi
 app = Flask(__name__)
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0', threaded=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)
