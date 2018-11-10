@@ -1,5 +1,10 @@
 # Virtual environment
+my_env/*
 venv/*
 
 # Idea
 .idea/*
+
+# VScode
+.vscode/*
+
