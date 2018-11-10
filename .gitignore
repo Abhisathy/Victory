@@ -8,3 +8,9 @@ venv/*
 # VScode
 .vscode/*
 
+#json
+*.json
+
+# pyc
+*.pyc
+
