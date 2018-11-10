@@ -17,21 +17,24 @@ db = firestore.client()
 app = Flask(__name__)
 
 
-def test():
-    pass
-
-
+@app.route('/userLogin', methods=['GET', 'POST'])
 def user_login():
     pass
 
 
+@app.route('/userSignup', methods=['GET', 'POST'])
 def user_signup():
     pass
 
 
+@app.route('/jobPosting', methods=['GET', 'POST'])
 def job_posting():
     pass
 
+
+@app.route('/testing')
+def testing():
+    pass
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
