@@ -26,16 +26,24 @@ def home():
 
 @app.route('/userLogin', methods=['GET', 'POST'])
 def user_login():
-    request.form.get('username')
-    request.form.get('password')
     if request.method == 'POST':
-        user = db.collection('users')
-        docs = user.get()
-        print(docs)
-        for doc in docs:
-            print(u'{} => {}'.format(doc.id, doc.to_dict()))
+        user_ref = db.collection('users').document(request.form.get('email'))
+        try:
+            user = user_ref.get()
+        except Exception:
+            err = 'User not found'
+            return render_template('login.html', error=err)
 
-        pbkdf2_sha256.verify(request.form.get('password'), password)
+        if not pbkdf2_sha256.verify(request.form.get('password'), user.get('password')):
+            err = 'Password or Username is incorrect.'
+            return render_template('login.html', error=err)
+        else:
+            session['username'] = user.get('email')
+            session['doctor'] = True
+            session['logged_in'] = True
+            msg = 'You have been successfully logged'
+            return redirect(url_for('dashboard', msg=msg))
+    return render_template('login.html')
 
 
 @app.route('/userSignup', methods=['GET', 'POST'])
