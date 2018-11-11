@@ -122,17 +122,13 @@ def dashboard():
 
         # Post and stuff
         try:
-            event_data = []
             event_ref = db.collection('events')
             for ev_doc in event_ref.get():
                 ev_doc.to_dict()['event_date'] = datetime.strptime(ev_doc.to_dict().get('event_date'),
                                                                    "%Y-%m-%d").strftime("%B %d, %Y")
-                event_data.append(ev_doc.to_dict())
+                ev = ev_doc.to_dict()
         except Exception as e:
             print(e)
-        if event_data and not tm_type == 'events':
-            ev = event_data[-1]
-            event_data = []
 
         if 'tm_type' not in dict(request.args) or tm_type == 'posts':
             # Post and stuff
