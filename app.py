@@ -28,6 +28,7 @@ def home():
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     user_detail = {}
+    msg=""
     try:
         user_ref = db.collection('users').document(session['username']).get()
         user_detail['full_name'] = user_ref.get('full_name')
