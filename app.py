@@ -1,5 +1,6 @@
 import json
 import firebase_admin
+from datetime import datetime
 from firebase_admin import credentials
 from firebase_admin import firestore
 from passlib.hash import pbkdf2_sha256
@@ -26,7 +27,18 @@ def home():
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
-    return render_template('dashboard.html')
+    user_detail = {}
+    try:
+        user_ref = db.collection('users').document(session['username']).get()
+        user_detail['full_name'] = user_ref.get('full_name')
+        user_detail['state'] = user_ref.get('state')
+        user_detail['dob'] = datetime.strptime(user_ref.get('dob'), "%m-%d-%Y").strftime("%B %d, %Y")
+    except Exception as e:
+        user_detail = {}
+        print(e)
+    if 'msg' in dict(request.args):
+        msg = dict(request.args)['msg']
+    return render_template('dashboard.html', user_detail=user_detail, msg=msg)
 
 
 @app.route('/userLogin', methods=['GET', 'POST'])
@@ -38,7 +50,6 @@ def user_login():
         except Exception:
             err = 'User not found'
             return render_template('login.html', error=err)
-        print(user.get('password'))
         if not pbkdf2_sha256.verify(request.form.get('password'), user.get('password')):
             err = 'Password or Username is incorrect.'
             return render_template('login.html', error=err)
@@ -46,7 +57,6 @@ def user_login():
             session['username'] = user.get('email')
             session['acc_type'] = user.get('acc_type')
             session['logged_in'] = True
-            print(session)
             msg = 'You have been successfully logged'
             return redirect(url_for('dashboard', msg=msg))
     return render_template('login.html')
@@ -82,7 +92,7 @@ def user_signup():
         except:
             err = "Unsuccessful! Try again"
             return render_template('signup.html', err=err)
-        
+
         session['username'] = str(request.form.get('email'))
         session['acc_type'] = str(request.form.get('acc_type'))
         session['logged_in'] = True
@@ -93,21 +103,18 @@ def user_signup():
 
 @app.route('/jobPosting', methods=['GET', 'POST'])
 def job_posting():
-    if request.method=='POST':
+    if request.method == 'POST':
         job_details = {
-            'mem_uploaded':session['username'],
-            'title':request.form.get('title'),
-            'description':request.form.get('description'),
-            'location':request.form.get('location'),
+            'mem_uploaded': session['username'],
+            'title': request.form.get('title'),
+            'description': request.form.get('description'),
             'url': request.form.get('url')
         }
 
         jobs = db.collection('jobs').document(request.form.get('title'))
         jobs.set(job_details)
-        return render_template('dashboard.html',msg='Job Posted')
-
-        
-    return render_template('dashboard.html',msg='Unable to post the job')
+        return render_template('dashboard.html', msg='Job Posted')
+    return render_template('dashboard.html', msg='Unable to post the job')
 
 
 @app.route('/logout')
@@ -128,6 +135,6 @@ def testing():
     return ''
 
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
-
+    session.clear()
