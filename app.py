@@ -33,7 +33,7 @@ def user_login():
         except Exception:
             err = 'User not found'
             return render_template('login.html', error=err)
-
+        print(user.get('password'))
         if not pbkdf2_sha256.verify(request.form.get('password'), user.get('password')):
             err = 'Password or Username is incorrect.'
             return render_template('login.html', error=err)
@@ -49,7 +49,7 @@ def user_login():
 @app.route('/userSignup', methods=['GET', 'POST'])
 def user_signup():
     if request.method == 'POST':
-        print(request.form)
+        print(request.form.get('email'))
         user_details = {
             'full_name' : request.form.get('full_name'),
             'email': request.form.get('email'),
@@ -63,13 +63,14 @@ def user_signup():
             'pin':pbkdf2_sha256.hash(str('pin'))
             
         }
-        user = db.collection('users').document(request.form.get('email'))
+
+        user = db.collection('users').document(str(request.form.get('email')))
         user.set(user_details)
         session['username'] = user.get('email')
         session['veteran'] = True
         session['logged_in'] = True
         msg = 'You have been successfully logged'
-        return redirect(url_for('dashboard', msg=msg))
+        return redirect(url_for('dashboard.html', msg=msg))
 
     return render_template('signup.html',message="Unsuccessful! Try again")
 
