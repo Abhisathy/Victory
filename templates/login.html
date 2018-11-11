@@ -4,45 +4,38 @@
 <head>
   <meta charset="UTF-8">
   <title>Login Form</title>
-  
-  
-  
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/style1.css') }}">
-
-  
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
 
 <body>
   <h1 style="color: black"><strong><center>Victory</center></strong></h1>
   <br><br>
-  <body>
-	<div class="login">
+  <div class="login">
 		<div class="login-screen">
 			<div class="app-title">
 				<h1>Login</h1>
 			</div>
+            {% if err %}
+                <p style="color: red;font-style: italic;">{{ err }}</p>
+            {% elif msg %}
+                <p style="color: blue;font-style: italic;">{{ msg }}</p>
+            {% endif %}
 
-			<form class="login-form" action="/dashboard">
+            <form class="login-form" action="/userLogin" method="post">
 				<div class="control-group">
-				<input type="text" class="login-field" value="" placeholder="username" id="login-name">
-				<label class="login-field-icon fui-user" for="login-name"></label>
+					<input type="email" class="login-field" placeholder="Email Address" id="email" name="email">
+					<label class="login-field-icon fui-user"></label>
 				</div>
-
 				<div class="control-group">
-				<input type="password" class="login-field" value="" placeholder="password" id="login-pass">
-				<label class="login-field-icon fui-lock" for="login-pass"></label>
+					<input type="password" class="login-field" name="password"  placeholder="Password" id="password">
+					<label class="login-field-icon fui-lock"></label>
 				</div>
-
 				<button type="submit" class="btn btn-primary btn-large btn-block">login</button>
 			</form>
 		</div>
-		<p style="color: black">Not a member?<a class="btn btn-primary btn-large btn-block" style="text-align: center" href="/userSignup">Signup</a></p>
-	</div>
-	</div>
+		<p style="color: black">Not a member?
+            <a class="btn btn-primary btn-large btn-block" style="text-align: center" href="{{url_for('user_signup')}}">Signup</a>
+        </p>
+  </div>
 </body>
-  
-  
-
-</body>
-
 </html>
