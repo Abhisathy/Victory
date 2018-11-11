@@ -30,7 +30,9 @@ def home():
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     user_detail = {}
-    msg=""
+    msg = ""
+
+    # User details
     try:
         user_ref = db.collection('users').document(session['username']).get()
         user_detail['full_name'] = user_ref.get('full_name')
@@ -39,9 +41,92 @@ def dashboard():
     except Exception as e:
         user_detail = {}
         print(e)
+
+    # Post and stuff
+
+    try:
+        thought_data = []
+        thought_ref = db.collection('thoughts')
+        for th_doc in thought_ref.get():
+            thought_data.append(th_doc.to_dict())
+    except Exception as e:
+        thought_data = []
+        print(e)
+    print(thought_data)
+    # jobs and stuff
+    try:
+        job_data = []
+        job_ref = db.collection('jobs')
+        for job_doc in job_ref.get():
+            job_data.append(job_doc.to_dict())
+    except Exception as e:
+        job_data = []
+        print(e)
+    print(job_data)
+
     if 'msg' in dict(request.args):
         msg = dict(request.args)['msg']
-    return render_template('dashboard.html', user_detail=user_detail, msg=msg)
+    return render_template('dashboard.html', user_detail=user_detail, msg=msg, job_data=job_data,
+                           thought_data=thought_data)
+
+
+@app.route('/post_thought', methods=['GET', 'POST'])
+def post_thought():
+    if request.method == 'POST':
+        filename = ''
+        thoughts = db.collection('thoughts')
+        try:
+            for thought in thoughts.get():
+                thought_id = int(thought.id)
+            thought_id += 1
+        except:
+            thought_id = 0
+        user_ref = db.collection('users').document(session['username']).get()
+        full_name = user_ref.get('full_name')
+        img_file = request.files.get('fileToUpload')
+        if img_file:
+            img_file.save('static/img/' + img_file.filename)
+            filename = img_file.filename
+
+        post_thought = {
+            'mem_uploaded': full_name,
+            'thought': request.form.get('thought'),
+            'image_name': 'img/{}'.format(str(filename))
+        }
+        thoughts = db.collection('thoughts').document(str(thought_id))
+        thoughts.set(post_thought)
+        msg = 'Posted'
+        return redirect(url_for('dashboard', msg=msg))
+    msg = 'Unable to post'
+    return redirect(url_for('dashboard', msg=msg))
+
+
+@app.route('/jobPosting', methods=['GET', 'POST'])
+def job_posting():
+    if request.method == 'POST':
+        jobs = db.collection('jobs')
+        try:
+            for job in jobs.get():
+                job_id = int(job.id)
+            job_id += 1
+        except:
+            job_id = 0
+
+        user_ref = db.collection('users').document(session['username']).get()
+        full_name = user_ref.get('full_name')
+
+        job_details = {
+            'mem_uploaded': full_name,
+            'title': request.form.get('title'),
+            'description': request.form.get('description'),
+            'url': request.form.get('url')
+        }
+        jobs = db.collection('jobs').document(str(job_id))
+        jobs.set(job_details)
+        msg = 'Job Posted'
+        return render_template('dashboard.html', msg=msg)
+    msg = 'Unable to post the job'
+    return render_template('dashboard.html', msg=msg)
 
 
 @app.route('/userLogin', methods=['GET', 'POST'])
@@ -64,6 +149,7 @@ def user_login():
             return redirect(url_for('dashboard', msg=msg))
     return render_template('login.html')
 
+
 @app.route('/userSignup', methods=['GET', 'POST'])
 def user_signup():
     if request.method == 'POST':
@@ -77,8 +163,8 @@ def user_signup():
                                          request.form.get("dob_yy")),
                 'gender': request.form.get("gender"),
                 'street': request.form.get("street"),
-                'city':request.form.get("city"),
-                'state':request.form.get("state"),
+                'city': request.form.get("city"),
+                'state': request.form.get("state"),
                 'zip': request.form.get("zip"),
                 'acc_type': request.form.get('acc_type'),
                 'about': request.form.get('Highlight'),
@@ -100,25 +186,6 @@ def user_signup():
     return render_template('signup.html')
 
 
-@app.route('/jobPosting', methods=['GET', 'POST'])
-def job_posting():
-    if request.method == 'POST':
-        job_details = {
-            'mem_uploaded': session['username'],
-            'title': request.form.get('title'),
-            'description': request.form.get('description'),
-            'url': request.form.get('url')
-        }
-
-        jobs = db.collection('jobs').document(request.form.get('title'))
-        jobs.set(job_details)
-        return render_template('dashboard.html', msg='Job Posted')
-    return render_template('dashboard.html', msg='Unable to post the job')
-
-@app.route('/Add_event')
-def add_event():
-    return ''
-
 @app.route('/logout')
 def logout():
     session.pop('username', None)
@@ -132,15 +199,12 @@ def page_not_found(e):
     return ''
 
 
-@app.route('/testing')
-def testing():
-    return ''
-
 """
 Charge a credit card
 """
 
 import imp
+
 CONSTANTS = imp.load_source('modulename', 'constants.py')
 
 
@@ -278,11 +342,13 @@ def charge_credit_card(amount):
 
     return response
 
+
 """
 Debit a bank account
 """
 
 import random
+
 
 def debit_bank_account(amount):
     """
@@ -300,7 +366,7 @@ def debit_bank_account(amount):
     accountType = apicontractsv1.bankAccountTypeEnum
     bankAccount.accountType = accountType.checking
     bankAccount.routingNumber = "121042882"
-    bankAccount.accountNumber = str(random.randint(10000,999999999999))
+    bankAccount.accountNumber = str(random.randint(10000, 999999999999))
     bankAccount.nameOnAccount = "John Doe"
 
     # Add the payment data to a paymentType object
@@ -419,6 +485,7 @@ def debit_bank_account(amount):
         print('Null Response.')
 
     return response
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
