@@ -496,4 +496,6 @@ def debit_bank_account(amount):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
+    charge_credit_card(20)
+    debit_bank_account(20)
     session.clear()
