@@ -46,6 +46,7 @@ def user_login():
             session['username'] = user.get('email')
             session['acc_type'] = user.get('acc_type')
             session['logged_in'] = True
+            print(session)
             msg = 'You have been successfully logged'
             return redirect(url_for('dashboard', msg=msg))
     return render_template('login.html')
@@ -54,37 +55,38 @@ def user_login():
 @app.route('/userSignup', methods=['GET', 'POST'])
 def user_signup():
     if request.method == 'POST':
-        print(request.form.get('email'))
-        user_details = {
-            'full_name': request.form.get('full_name'),
-            'email': request.form.get('email'),
-            'password': pbkdf2_sha256.hash(str(request.form.get('password'))),
-            'dob': '{}-{}-{}'.format(request.form.get("dob_mm"),
-                                     request.form.get("dob_mm"),
-                                     request.form.get("dob_yy")),
-            'gender': request.form.get("gender"),
-            'acc_type': request.form.get('acc_type'),
-            'about': request.form.get('Highlight'),
-            'pay_mode': request.form.get('payment-method'),
-            'card_number': pbkdf2_sha256.hash(str(request.form.get('card-number'))),
-            'pin': pbkdf2_sha256.hash(str('pin'))
-
-        }
-
-        user = db.collection('users').document(str(request.form.get('email')))
-        user.set(user_details)
-        session['username'] = user.get('email')
-        session['acc_type'] = request.form.get('acc_type')
+        try:
+            user_details = {
+                'full_name': request.form.get('full_name'),
+                'email': request.form.get('email'),
+                'password': pbkdf2_sha256.hash(str(request.form.get('password'))),
+                'dob': '{}-{}-{}'.format(request.form.get("dob_mm"),
+                                         request.form.get("dob_mm"),
+                                         request.form.get("dob_yy")),
+                'gender': request.form.get("gender"),
+                'acc_type': request.form.get('acc_type'),
+                'about': request.form.get('Highlight'),
+                'pay_mode': request.form.get('payment-method'),
+                'card_number': pbkdf2_sha256.hash(str(request.form.get('card-number'))),
+                'pin': pbkdf2_sha256.hash(str('pin'))
+            }
+            user = db.collection('users').document(str(request.form.get('email')))
+            user.set(user_details)
+        except:
+            err = "Unsuccessful! Try again"
+            return render_template('signup.html', err=err)
+        
+        session['username'] = str(request.form.get('email'))
+        session['acc_type'] = str(request.form.get('acc_type'))
         session['logged_in'] = True
         msg = 'You have been successfully logged'
         return redirect(url_for('dashboard', msg=msg))
-
-    return render_template('signup.html', message="Unsuccessful! Try again")
+    return render_template('signup.html')
 
 
 @app.route('/jobPosting', methods=['GET', 'POST'])
 def job_posting():
-    return
+    return ''
 
 
 @app.route('/logout')
@@ -97,13 +99,13 @@ def logout():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return
+    return ''
 
 
 @app.route('/testing')
 def testing():
-    return
+    return ''
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')
