@@ -352,7 +352,7 @@ import imp
 
 CONSTANTS = imp.load_source('modulename', 'constants.py')
 
-@app.route('/pay')
+@app.route('/pay/<amount>', methods=['POST'])
 def charge_credit_card(amount):
     """
     Charge a credit card
@@ -488,9 +488,9 @@ def charge_credit_card(amount):
 
     res = debit_bank_account(amount)
     if res is None:
-        return render_template('PaymentRespnse.html',err = True,msg = "Transaction is Unsuccessful")
+        return render_template('PaymentResponse.html',err = True,msg = "Transaction is Unsuccessful")
     else:
-        return render_template('PaymentRespnse.html', err = False, msg=res)
+        return render_template('PaymentResponse.html', err = False, msg=res)
 
 
 """

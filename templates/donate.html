@@ -25,7 +25,7 @@
 
 <form id="paymentForm"
     method="POST"
-    action="/pay">
+    action={{ url_for('charge_credit_card',amount=20) }}>
     <input type="hidden" name="dataValue" id="dataValue" />
     <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
     <div class="row">
@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-    <button type="button"
+    <button type="submit"
         style="color: white; float: right;background-color: coral;width: 30%;line-height: 2.5"
         class="AcceptUI"
         data-billingAddressOptions='{"show":true, "required":false}' 
