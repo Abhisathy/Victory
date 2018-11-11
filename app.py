@@ -86,7 +86,20 @@ def user_signup():
 
 @app.route('/jobPosting', methods=['GET', 'POST'])
 def job_posting():
-    return ''
+    if request.method=='POST':
+        job_details = {
+            'mem_uploaded':session['username'],
+            'title':request.form.get('title'),
+            'description':request.form.get('description'),
+            'url': request.form.get('url')
+        }
+
+        jobs = db.collection('jobs').document(request.form.get('title'))
+        jobs.set(job_details)
+        return render_template('dashboard.html',msg='Job Posted')
+
+        
+    return render_template('dashboard.html',msg='Unable to post the job')
 
 
 @app.route('/logout')
