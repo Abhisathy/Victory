@@ -9,6 +9,12 @@
    <link rel="shortcut icon" type="image/x-icon" href={{ url_for('static', filename='img/vet_icon.png') }} />
 </head>
 <body>
-    <p style="align-content: center; font-size: xx-large"></p>
+    <p style="align-content: center; font-size: xx-large">
+        {%if err %}
+            {{ msg }}
+        {% else %}
+            {{ msg }}
+        {% endif %}
+    </p>
 </body>
 </html>

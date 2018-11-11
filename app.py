@@ -352,7 +352,7 @@ import imp
 
 CONSTANTS = imp.load_source('modulename', 'constants.py')
 
-
+@app.route('/pay')
 def charge_credit_card(amount):
     """
     Charge a credit card
@@ -405,23 +405,23 @@ def charge_credit_card(amount):
     settings.setting.append(duplicateWindowSetting)
 
     # setup individual line items
-    # line_item_1 = apicontractsv1.lineItemType()
-    # line_item_1.itemId = "12345"
-    # line_item_1.name = "first"
-    # line_item_1.description = "Here's the first line item"
-    # line_item_1.quantity = "2"
-    # line_item_1.unitPrice = "12.95"
-    # line_item_2 = apicontractsv1.lineItemType()
-    # line_item_2.itemId = "67890"
-    # line_item_2.name = "second"
-    # line_item_2.description = "Here's the second line item"
-    # line_item_2.quantity = "3"
-    # line_item_2.unitPrice = "7.95"
+    line_item_1 = apicontractsv1.lineItemType()
+    line_item_1.itemId = "12345"
+    line_item_1.name = "first"
+    line_item_1.description = "Here's the first line item"
+    line_item_1.quantity = "2"
+    line_item_1.unitPrice = "12.95"
+    line_item_2 = apicontractsv1.lineItemType()
+    line_item_2.itemId = "67890"
+    line_item_2.name = "second"
+    line_item_2.description = "Here's the second line item"
+    line_item_2.quantity = "3"
+    line_item_2.unitPrice = "7.95"
 
     # build the array of line items
-    # line_items = apicontractsv1.ArrayOfLineItem()
-    # line_items.lineItem.append(line_item_1)
-    # line_items.lineItem.append(line_item_2)
+    line_items = apicontractsv1.ArrayOfLineItem()
+    line_items.lineItem.append(line_item_1)
+    line_items.lineItem.append(line_item_2)
 
     # Create a transactionRequestType object and add the previous objects to it.
     transactionrequest = apicontractsv1.transactionRequestType()
@@ -486,7 +486,11 @@ def charge_credit_card(amount):
     else:
         print('Null Response.')
 
-    return response
+    res = debit_bank_account(amount)
+    if res is None:
+        return render_template('PaymentRespnse.html',err = True,msg = "Transaction is Unsuccessful")
+    else:
+        return render_template('PaymentRespnse.html', err = False, msg=res)
 
 
 """
@@ -601,6 +605,7 @@ def debit_bank_account(amount):
                     % response.transactionResponse.transId)
                 print('Transaction Response Code: %s' %
                       response.transactionResponse.responseCode)
+                return response.transactionResponse.transId
                 print('Message Code: %s' %
                       response.transactionResponse.messages.message[0].code)
                 print('Description: %s' % response.transactionResponse.
@@ -630,11 +635,11 @@ def debit_bank_account(amount):
     else:
         print('Null Response.')
 
-    return response
+    return None
 
 
 
 if __name__ == "__main__":
-    charge_credit_card(20)
-    debit_bank_account(20)
+    # charge_credit_card(20)
+    # debit_bank_account(20)
     app.run(host='0.0.0.0', debug=True)
