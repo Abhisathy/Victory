@@ -1,35 +1,62 @@
 <!DOCTYPE html>
 <html>
+<head>
 <title>Victory</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<!-- Bootstrap core CSS-->
+  <!-- Bootstrap core CSS-->
+  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
 <body>
 
 <header class="w3-container w3-deep-purple">
   <h1><center>Victory</center></h1>
 </header>
 
-<div class="w3-container w3-half w3-margin-top w3-animate-left w3-display-bottommiddle">
-<form class="w3-container w3-card-4 " action="{{url_for('user_login')}}">
-<h2>Login</h2>
-            {% if err %}
-                <p style="color: red;font-style: italic;">{{ err }}</p>
-            {% elif msg %}
-                <p style="color: blue;font-style: italic;">{{ msg }}</p>
-            {% endif %}
-<p>
-<input class="w3-input" type="email" style="width:90%" required>
-<label>Email</label></p>
-<p>
-<input class="w3-input" type="password" style="width:90%" required>
-<label>Password</label></p>
-<p><a class="w3-button w3-section w3-purple w3-ripple w3-left" href="{{ url_for('user_signup') }}"> Signup </a></p>
 
-<p>
-<button class="w3-button w3-section w3-deep-purple w3-ripple w3-right" type="submit"> Log in </button></p>
+<div class="container">
+  <div class="card card-login mx-auto mt-5">
+    <div class="card-header">Login</div>
+    <div class="card-body">
+      <form method="post" action="{{url_for('user_login')}}">
+        <br/>
+        <h4>Welcome to SuraMedical</h4>
+        {% if error %}
+            <p style="color: red;font-style: italic;">{{ error }}</p>
+        {% endif %}
+        <br/>
+        <div class="form-group">
+          <label for="username" for="username">Username:</label>
+          <input class="form-control" id='email' name='email' type='email' aria-describedby="usernameHelp" placeholder="Email Id" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input class="form-control" id="password" name="password" type="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox"> Remember Password</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-left: 1em">Login</button>
+          <button type="reset" class="btn btn-secondary-outline" style="margin-left: 2em">Cancel</button>
+        </form>
+        <div class="text-center">
+          <a class="d-block small mt-3" href="usersignup">Register an Account</a>
+          <a class="d-block small" href="forgotpassword">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-</form>
+<!-- Bootstrap core JavaScript -->
+  <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-</div>
 </body>
 </html>
