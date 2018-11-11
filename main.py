@@ -130,7 +130,7 @@ def dashboard():
                 event_data.append(ev_doc.to_dict())
         except Exception as e:
             print(e)
-        if event_data:
+        if event_data and not tm_type == 'events':
             ev = event_data[-1]
             event_data = []
 
@@ -278,8 +278,8 @@ def add_skill():
 @app.route('/userLogin', methods=['GET', 'POST'])
 def user_login():
     if request.method == 'POST':
-        user_ref = db.collection('users').document(request.form.get('email'))
         try:
+            user_ref = db.collection('users').document(request.form.get('email'))
             user = user_ref.get()
         except Exception:
             err = 'User not found'
