@@ -21,7 +21,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home():
-    return render_template('index.html')
+    return render_template('signup.html')
 
 
 @app.route('/userLogin', methods=['GET', 'POST'])
@@ -42,7 +42,7 @@ def user_login():
             session['doctor'] = True
             session['logged_in'] = True
             msg = 'You have been successfully logged'
-            return redirect(url_for('dashboard', msg=msg))
+            return redirect(url_for('dashboard.html', msg=msg))
     return render_template('login.html')
 
 
@@ -54,7 +54,7 @@ def user_signup():
             'full_name' : request.form.get('full_name'),
             'email': request.form.get('email'),
             'password': pbkdf2_sha256.hash(str(request.form.get('password'))),
-            'dob':str(request.form.get("date_month"))+'-'+request.form.get("date_dob")+'-'+request.form.get("date_year"),
+            'dob':'{}-{}-{}'.format(request.form.get("dob_mm"),request.form.get("dob_mm"),request.form.get("dob_yy")),
             'gender':request.form.get("gender"),
             'acc_type': request.form.get('acc_type'),
             'about':request.form.get('Highlight'),
@@ -66,12 +66,12 @@ def user_signup():
         user = db.collection('users').document(request.form.get('email'))
         user.set(user_details)
         session['username'] = user.get('email')
-        session['doctor'] = True
+        session['veteran'] = True
         session['logged_in'] = True
         msg = 'You have been successfully logged'
         return redirect(url_for('dashboard', msg=msg))
 
-    return render_template('signup.html')
+    return render_template('signup.html',message="Unsuccessful! Try again")
 
 
 @app.route('/jobPosting', methods=['GET', 'POST'])

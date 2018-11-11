@@ -17,11 +17,12 @@
 <body>
 
 <h1 style="color: black"><strong><center>Victory</center></strong></h1>
+<h1 style="color: red"><strong><center>{{ message }}</center></strong></h1>
 <br><br>  
 <div class="container">
   <form action="/userSignup" method="post">
     <div class="row">
-      <h4><center>Signup</center></h4>
+      <h3 style="color:  #7ed321;"><center>Signup</center></h3>
       <div class="input-group input-group-icon">
         <input type="text" placeholder="Full Name" name="full_name"/>
 
@@ -41,13 +42,13 @@
         <h4>Date of Birth</h4>
         <div class="input-group">
           <div class="col-third">
-            <input type="text" placeholder="DD"/>
+            <input type="text" placeholder="DD" name="dob_dd" />
           </div>
           <div class="col-third">
-            <input type="text" placeholder="MM"/>
+            <input type="text" placeholder="MM" name="dob_mm" />
           </div>
           <div class="col-third">
-            <input type="text" placeholder="YYYY"/>
+            <input type="text" placeholder="YYYY" name="dob_yy" />
           </div>
         </div>
       </div>
@@ -64,10 +65,10 @@
     <div class="row">
       <h4>Are you a veteran?</h4>
       <div class="input-group">
-        <input type="radio" name="Veteran" value="VeteranYes" id="VeteranYes" checked="true"/>
-        <label for="VeteranYes">Veteran</label>
-        <input type="radio" name="Veteran" value="VeteranNo" id="VeteranNo"/>
-        <label for="VeteranNo">Not Veteran</label>
+        <input type="radio" name="acc_type" value="veteran" id="VeteranYes" checked="true"/>
+        <label for="veteran">Veteran</label>
+        <input type="radio" name="acc_type" value="user" id="VeteranNo"/>
+        <label for="user">Not Veteran</label>
       </div>
     </div>
     <div class="row">
