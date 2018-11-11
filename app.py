@@ -200,7 +200,7 @@ def logout():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return ''
+    return render_template('Error404.html')
 
 @app.route('/donate')
 def donate():
