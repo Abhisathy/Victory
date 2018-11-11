@@ -25,7 +25,7 @@
 
 <form id="paymentForm"
     method="POST"
-    action={{ url_for('charge_credit_card',amount=Amount) }}>
+    action={{ url_for('charge_credit_card') }}>
     <input type="hidden" name="dataValue" id="dataValue" />
     <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
     <div class="row">

@@ -352,12 +352,15 @@ import imp
 
 CONSTANTS = imp.load_source('modulename', 'constants.py')
 
-@app.route('/pay/<amount>', methods=['POST'])
-def charge_credit_card(amount):
+@app.route('/pay', methods=['POST'])
+def charge_credit_card():
     """
     Charge a credit card
     """
+    # if 'card-number' in dict(request.args):
+            # card_number = dict(request.args)['card-number']
 
+    amount = request.form.get('Amount')
     # Create a merchantAuthenticationType object with authentication details
     # retrieved from the constants file
     merchantAuth = apicontractsv1.merchantAuthenticationType()
@@ -640,6 +643,4 @@ def debit_bank_account(amount):
 
 
 if __name__ == "__main__":
-    # charge_credit_card(20)
-    # debit_bank_account(20)
     app.run(host='0.0.0.0', debug=True)
