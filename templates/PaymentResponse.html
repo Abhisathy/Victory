@@ -9,12 +9,18 @@
    <link rel="shortcut icon" type="image/x-icon" href={{ url_for('static', filename='img/vet_icon.png') }} />
 </head>
 <body>
-    <p style="align-content: center; font-size: xx-large">
+    <div class="row">
         {%if err %}
+            <h1 style="color: black"><strong><center>Transaction Unsuccessful</center></strong></h1>
             {{ msg }}
         {% else %}
+            <h1 style="color: black"><strong><center>Transaction Successful!</center></strong></h1>
             {{ msg }}
         {% endif %}
-    </p>
+    </div>
+    <div class="row">
+        <button href={{ url_for('dashboard') }} class="btn">Back to dashboard</button>
+    </div>
+
 </body>
 </html>
