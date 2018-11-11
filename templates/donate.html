@@ -1,24 +1,73 @@
 <!DOCTYPE html>
 <html>
+
+<!--
+    This file is a standalone HTML page demonstrating usage of the Authorize.net
+    Accept JavaScript library using the integrated payment information form.
+
+    For complete documentation for the Accept JavaScript library, see
+    https://developer.authorize.net/api/reference/features/acceptjs.html
+-->
+
 <head>
-<title>Victory</title>
-<link rel="shortcut icon" type="image/x-icon" href={{ url_for('static', filename='img/vet_icon.png') }} />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Bootstrap core CSS-->
-  <!-- Bootstrap core CSS-->
-  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Sample form</title>
 </head>
+
 <body>
 
-<!--Add the donate form here-->
-<h1>Donate </h1>
-<!-- Bootstrap core JavaScript -->
-  <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+<script type="text/javascript"
+    src="https://api.authorize.net/xml/v1/request.api"
+    charset="utf-8">
+</script>
+
+<form id="paymentForm"
+    method="POST"
+    action="https://YourServer/PathToExistingPaymentProcessingScript">
+    <input type="hidden" name="dataValue" id="dataValue" />
+    <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
+    <button type="button"
+        class="AcceptUI"
+        data-billingAddressOptions='{"show":true, "required":false}' 
+        data-apiLoginID="{{ loginID }}" 
+        data-transactionKey="{{ clientkey }}"
+        data-acceptUIFormBtnTxt="Submit" 
+        data-acceptUIFormHeaderTxt="Card Information" 
+        data-responseHandler="responseHandler">Pay
+    </button>
+</form>
+
+<script type="text/javascript">
+
+function responseHandler(response) {
+    if (response.messages.resultCode === "Error") {
+        var i = 0;
+        while (i < response.messages.message.length) {
+            console.log(
+                response.messages.message[i].code + ": " +
+                response.messages.message[i].text
+            );
+            i = i + 1;
+        }
+    } else {
+        paymentFormUpdate(response.opaqueData);
+    }
+}
+
+
+function paymentFormUpdate(opaqueData) {
+    document.getElementById("dataDescriptor").value = opaqueData.dataDescriptor;
+    document.getElementById("dataValue").value = opaqueData.dataValue;
+
+    // If using your own form to collect the sensitive data from the customer,
+    // blank out the fields before submitting them to your server.
+    // document.getElementById("cardNumber").value = "";
+    // document.getElementById("expMonth").value = "";
+    // document.getElementById("expYear").value = "";
+    // document.getElementById("cardCode").value = "";
+
+    document.getElementById("paymentForm").submit();
+}
+</script>
 
 </body>
 </html>
