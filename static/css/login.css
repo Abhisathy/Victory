@@ -35,7 +35,7 @@ margin-bottom: 10px;
 
 input {
 text-align: center;
-background-color: #ECF0F1;
+background-color: 	#8A2BE2;
 border: 2px solid transparent;
 border-radius: 3px;
 font-size: 16px;
@@ -52,7 +52,7 @@ box-shadow: none;
 
 .btn {
   border: 2px solid transparent;
-  background: #7ed321;
+  background: 	#8A2BE2;
   color: #ffffff;
   font-size: 16px;
   line-height: 25px;
@@ -68,7 +68,7 @@ box-shadow: none;
 }
 
 .btn:hover {
-  background-color: #7ed321;
+  background-color: #8A2BE2;
 }
 
 .login-link {
