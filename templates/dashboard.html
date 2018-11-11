@@ -145,6 +145,21 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       </div>
     
     <!-- End Left Column -->
+    <div class="w3-col m7">
+        <div class="w3-row-padding">
+        <div class="w3-col m12">
+          <div class="w3-card w3-round w3-white">
+            <div class="w3-container w3-padding">
+                {% if err %}
+                  <p style="color: red;font-style: italic;">{{ err }}</p>
+                {% elif msg %}
+                  <p style="color: green;font-style: italic;">{{ msg }}</p>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
     
     <!-- Middle Column -->
