@@ -62,10 +62,6 @@ def home():
         event_data = []
         print(e)
 
-    algo_tot.extend(thought_data)
-    algo_tot.extend(event_data)
-    index.add_objects(algo_tot)
-
     return render_template('index.html', thought_data=reversed(thought_data), event_data=reversed(event_data))
 
 
