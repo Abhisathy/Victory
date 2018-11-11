@@ -62,10 +62,6 @@ def user_login():
             return redirect(url_for('dashboard', msg=msg))
     return render_template('login.html')
 
-@app.route('/signup', methods=['GET','POST'])
-def signup():
-    return render_template('signup.html')
-
 @app.route('/userSignup', methods=['GET', 'POST'])
 def user_signup():
     if request.method == 'POST':
