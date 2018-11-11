@@ -34,7 +34,30 @@ app.config['SESSION_TYPE'] = 'filesystem'
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home():
-    return render_template('index.html')
+    thought_data, event_data = [], []
+    # Post and stuff
+    try:
+        thought_data = []
+        thought_ref = db.collection('thoughts')
+        for th_doc in thought_ref.get():
+            thought_data.append(th_doc.to_dict())
+    except Exception as e:
+        thought_data = []
+        print(e)
+
+    # Post and stuff
+    try:
+        event_data = []
+        event_ref = db.collection('events')
+        for ev_doc in event_ref.get():
+            ev_doc.to_dict()['event_date'] = datetime.strptime(ev_doc.to_dict().get('event_date'),
+                                                               "%Y-%m-%d").strftime("%B %d, %Y")
+            event_data.append(ev_doc.to_dict())
+    except Exception as e:
+        event_data = []
+        print(e)
+
+    return render_template('index.html', thought_data=reversed(thought_data), event_data=reversed(event_data))
 
 
 @app.route('/dashboard', methods=['GET'])
@@ -43,7 +66,7 @@ def dashboard():
     msg = ""
     job_data, thought_data, event_data = [], [], []
     show_info = {}
-    if session['logged_in']:
+    if 'logged_in' in session:
 
         if 'msg' in dict(request.args):
             msg = dict(request.args)['msg']
@@ -57,7 +80,6 @@ def dashboard():
             user_detail['skill'] = user_ref.get('skill')
         except Exception as e:
             print(e)
-        print(user_detail)
 
         if 'tm_type' in dict(request.args):
             tm_type = dict(request.args)['tm_type'][0]
@@ -74,7 +96,6 @@ def dashboard():
                 except Exception as e:
                     job_data = []
                     print(e)
-                print(job_data)
 
             if tm_type == 'events':
                 # Post and stuff
@@ -88,7 +109,7 @@ def dashboard():
                 except Exception as e:
                     event_data = []
                     print(e)
-                print(event_data)
+
         if 'tm_type' not in dict(request.args) or tm_type == 'posts':
             # Post and stuff
             try:
@@ -99,7 +120,6 @@ def dashboard():
             except Exception as e:
                 thought_data = []
                 print(e)
-            print(thought_data)
 
         return render_template('dashboard.html', user_detail=user_detail, msg=msg, job_data=reversed(job_data),
                                thought_data=reversed(thought_data), event_data=reversed(event_data),
