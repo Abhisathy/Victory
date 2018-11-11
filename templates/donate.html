@@ -8,7 +8,10 @@
     For complete documentation for the Accept JavaScript library, see
     https://developer.authorize.net/api/reference/features/acceptjs.html
 -->
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+   <link rel="shortcut icon" type="image/x-icon" href={{ url_for('static', filename='img/vet_icon.png') }} />
 <head>
     <title>Sample form</title>
 </head>
@@ -25,7 +28,41 @@
     action="https://YourServer/PathToExistingPaymentProcessingScript">
     <input type="hidden" name="dataValue" id="dataValue" />
     <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
+    <div class="row">
+      <h4 style="color: black">Payment Details</h4>
+        <input type="number" placeholder="Amount" name="Amount" />
+        <br><br>
+      <div class="input-group">
+        <input type="radio" name="payment-method" value="card" id="payment-method-card" checked="true"/>
+        <label for="payment-method-card"><span><i class="fa fa-cc-visa"></i>Credit Card</span></label>
+        <input type="radio" name="payment-method" value="paypal" id="payment-method-paypal"/>
+        <label for="payment-method-paypal"> <span><i class="fa fa-cc-paypal"></i>Paypal</span></label>
+      </div>
+      <div class="input-group input-group-icon">
+        <input type="text" placeholder="Card Number" name="card-number" />
+        <div class="input-icon"><i class="fa fa-credit-card"></i></div>
+      </div>
+      <div class="col-half">
+        <div class="input-group input-group-icon">
+          <input type="text" placeholder="Card CVC" name="pin" />
+          <div class="input-icon"><i class="fa fa-user"></i></div>
+        </div>
+      </div>
+      <div class="col-half">
+        <div class="input-group">
+          <select>
+            <option>01 Jan</option>
+            <option>02 Jan</option>
+          </select>
+          <select>
+            <option>2015</option>
+            <option>2016</option>
+          </select>
+        </div>
+      </div>
+    </div>
     <button type="button"
+        style="color: white; float: right;background-color: coral;width: 30%;line-height: 2.5"
         class="AcceptUI"
         data-billingAddressOptions='{"show":true, "required":false}' 
         data-apiLoginID="{{ loginID }}" 
