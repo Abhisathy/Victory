@@ -25,7 +25,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 
   <!-- Header -->
   <header class="w3-container w3-center w3-padding-48 w3-white">
-    <h1 class="w3-xxxlarge"><b>Victory</b></h1>
+    <h1 class="w3-jumbo"><b>Victory</b></h1>
     <h6>Connect with our VETERANS!</h6>
   </header>
 
@@ -220,11 +220,11 @@ and is wrapped around the whole page content, except for the footer in this exam
         </div>
         <div class="w3-container w3-white">
           <p>
-            <span class="w3-tag w3-deep-purple w3-margin-bottom">Fashion</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">New York</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">London</span>
-            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Hats</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Norway</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Sweaters</span>
-            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Ideas</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Deals</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Accessories</span>
-            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">News</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Clothing</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Shopping</span>
-            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Jeans</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Trends</span>
+            <span class="w3-tag w3-deep-purple w3-margin-bottom">Veteran's day</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">New York</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">California</span>
+            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Technology</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Washington</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Donations</span>
+            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Ideas</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Meetups</span>
+            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">News</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Clothing</span>
+            <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Jobs</span> <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Courses</span>
           </p>
         </div>
       </div>
@@ -237,12 +237,12 @@ and is wrapped around the whole page content, except for the footer in this exam
         </div>
         <div class="w3-row-padding w3-white">
           <div class="w3-col s6">
-            <p><img src="/w3images/jeans.jpg" alt="Jeans" style="width:100%"></p>
-            <p><img src="/w3images/team1.jpg" alt="Jeans" style="width:100%"></p>
+            <p><img src={{ url_for('static', filename='img/inspirational1.jpg') }} alt="Inspiration" style="width:100%"></p>
+            <p><img src={{ url_for('static', filename='img/inspirational2.jpg') }} alt="Inspiration" style="width:100%"></p>
           </div>
           <div class="w3-col s6">
-            <p><img src="/w3images/avatar_hat.jpg" alt="Men in Hats" style="width:100%" class="w3-grayscale"></p>
-            <p><img src="/w3images/team4.jpg" alt="Jeans" style="width:100%"></p>
+            <p><img src={{ url_for('static', filename='img/inspirational3.jpg') }} alt="Inspiration" style="width:100%" class="w3-grayscale"></p>
+            <p><img src={{ url_for('static', filename='img/inspirational4.jpg') }} alt="Inspiration" style="width:100%"></p>
          </div>
         </div>
       </div>
@@ -250,7 +250,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 
       <div class="w3-white w3-margin">
         <div class="w3-container w3-padding w3-deep-purple">
-          <h4>Follow Me</h4>
+          <h4>Follow Us</h4>
         </div>
         <div class="w3-container w3-xlarge w3-padding">
           <i class="fa fa-facebook-official w3-hover-opacity"></i>
@@ -290,7 +290,7 @@ and is wrapped around the whole page content, except for the footer in this exam
     <div class="w3-container w3-white">
       <i onclick="document.getElementById('subscribe').style.display='none'" class="fa fa-remove w3-transparent w3-button w3-xlarge w3-right"></i>
       <h2 class="w3-wide">SUBSCRIBE</h2>
-      <p>Join my mailing list to receive updates on the latest blog posts and other things.</p>
+      <p>Join our mailing list to receive updates on the latest blog posts and other things.</p>
       <p><input class="w3-input w3-border" type="text" placeholder="Enter e-mail"></p>
       <button type="button" class="w3-button w3-block w3-padding-large w3-red w3-margin-bottom" onclick="document.getElementById('subscribe').style.display='none'">Subscribe</button>
     </div>
@@ -300,7 +300,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 <!-- Footer -->
 <footer class="w3-container w3-dark-grey" style="padding:32px">
   <a href="#" class="w3-button w3-deep-purple w3-padding-large w3-margin-bottom"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
-  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+  <p>Developed by Abhinav, Harshad & Samba</p>
 </footer>
 
 <script>
