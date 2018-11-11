@@ -21,7 +21,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home():
-    return render_template('signup.html')
+    return render_template('index.html')
 
 
 @app.route('/dashboard', methods=['GET'])
