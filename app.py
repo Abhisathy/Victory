@@ -366,9 +366,9 @@ def charge_credit_card(amount):
 
     # Create the payment data for a credit card
     creditCard = apicontractsv1.creditCardType()
-    creditCard.cardNumber = "4111111111111111"
-    creditCard.expirationDate = "2020-12"
-    creditCard.cardCode = "123"
+    creditCard.cardNumber = request.form.get('card-number')
+    creditCard.expirationDate = "{}-{}".format(request.form.get('card_yy'),request.form.get('card_mm'))
+    creditCard.cardCode = request.form.get('pin')
 
 
     # Add the payment data to a paymentType object
