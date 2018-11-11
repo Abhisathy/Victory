@@ -92,7 +92,8 @@ def dashboard():
             print(thought_data)
 
         return render_template('dashboard.html', user_detail=user_detail, msg=msg, job_data=reversed(job_data),
-                               thought_data=reversed(thought_data), event_data=reversed(event_data), show_info=show_info)
+                               thought_data=reversed(thought_data), event_data=reversed(event_data),
+                               show_info=show_info)
     err = 'Login Required'
     return render_template('index.html', err=err)
 
@@ -119,12 +120,12 @@ def post_thought():
             'mem_uploaded': full_name,
             'thought': request.form.get('thought'),
             'image_name': 'img/{}'.format(str(filename)),
-            'date': datetime.datetime.today().strftime("%B %d, %Y")
+            'date': datetime.today().strftime("%B %d, %Y")
         }
         thoughts = db.collection('thoughts').document(str(thought_id))
         thoughts.set(post_thought)
         msg = 'Posted'
-        return redirect(url_for('dashboard', msg=msg))
+        return redirect(url_for('dashboard', msg=msg, tm_type='posts'))
     msg = 'Unable to post'
     return redirect(url_for('dashboard', msg=msg))
 
@@ -148,12 +149,12 @@ def job_posting():
             'title': request.form.get('title'),
             'description': request.form.get('description'),
             'url': request.form.get('url'),
-            'date': datetime.datetime.today().strftime("%B %d, %Y")
+            'date': datetime.today().strftime("%B %d, %Y")
         }
         jobs = db.collection('jobs').document(str(job_id))
         jobs.set(job_details)
         msg = 'Job Posted'
-        return render_template('dashboard.html', msg=msg)
+        return render_template('dashboard.html', msg=msg, tm_type='resources')
     msg = 'Unable to post the job'
     return render_template('dashboard.html', msg=msg)
 
@@ -181,7 +182,24 @@ def add_event():
         events = db.collection('events').document(str(event_id))
         events.set(event_details)
         msg = 'Added Event successfully'
+        return redirect(url_for('dashboard', msg=msg, tm_type='events'))
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/add_skill', methods=['GET', 'POST'])
+def add_skill():
+    if request.method == "POST":
+        user_ref = db.collection('users').document(request.form.get('email'))
+        if user_ref.get().get('skill'):
+            skill = user_ref.get().get('skill')
+            skill.update(request.form.get('skill'))
+        else:
+            skill = [request.form.get('skill')]
+        user_ref.set({'skill': skill}, merge=True)
+        msg = 'Added successfully'
+        print(msg)
         return redirect(url_for('dashboard', msg=msg))
+    print('error')
     return redirect(url_for('dashboard'))
 
 
@@ -210,7 +228,7 @@ def user_login():
 def user_signup():
     if request.method == 'POST':
         try:
-            phone = str(request.form.get("phone")) if len(request.form.get("phone"))==10 else None
+            phone = str(request.form.get("phone")) if len(request.form.get("phone")) == 10 else None
             if phone is None:
                 return render_template('signup.html', err=" Please check the phone number")
             user_details = {
@@ -254,17 +272,16 @@ def logout():
     msg = 'You have been successfully logged out.'
     return redirect(url_for('home', msg=msg))
 
-@app.route('/Add_skill')
-def add_skill():
-    return ''
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('Error404.html')
 
+
 @app.route('/donate')
 def donate():
     return render_template('donate.html')
+
 
 """
 Charge a credit card
