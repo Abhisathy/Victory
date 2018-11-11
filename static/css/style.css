@@ -11,7 +11,7 @@ body {
   background-color: #e3e3e3;
 }
 h4 {
-  color: #7ed321;
+  color: white;
 }
 input,
 input[type="radio"] + label,
@@ -35,7 +35,7 @@ input:focus {
   border-color: #64ac15;
 }
 input:focus + .input-icon i {
-  color: #7ed321;
+  color: coral;
 }
 input:focus + .input-icon:after {
   border-right-color: #7ed321;
@@ -66,7 +66,7 @@ input[type="radio"]:checked + label,
 input:checked + label:before,
 select:focus,
 select:active {
-  background-color: #7ed321;
+  background-color: coral;
   color: #fff;
   border-color: #64ac15;
 }
@@ -118,11 +118,11 @@ select:active {
   outline: 0;
 }
 select option {
-  background-color: #7ed321;
+  background-color: #8A2BE2;
   color: #fff;
 }
 .btn {
-  background-color: #7ed321;
+  background-color: coral;
   color: #fff;
   padding: 1em;
   line-height: 1.4;
@@ -182,7 +182,7 @@ select option {
   max-width: 38em;
   padding: 1em 3em 2em 3em;
   margin: 0em auto;
-  background-color: #fff;
+  background-color: #8A2BE2;
   border-radius: 4.2px;
   box-shadow: 0px 3px 10px -2px rgba(0, 0, 0, 0.2);
 }

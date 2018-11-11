@@ -20,14 +20,14 @@
 <div class="container">
   <form action="/userSignup" method="post">
     <div class="row">
-      <h3 style="color:  #7ed321;"><center>Signup</center></h3>
+      <h3 style="color:  #ffffff;font-size: x-large"><center>Signup</center></h3>
       <div class="input-group input-group-icon">
         <input type="text" placeholder="Full Name" name="full_name"/>
 
         <div class="input-icon"><i class="fa fa-user"></i></div>
       </div>
       <div class="input-group input-group-icon">
-        <input type="email" placeholder="Email Adress" name="email" />
+        <input type="email" placeholder="Email Address" name="email" />
         <div class="input-icon"><i class="fa fa-envelope"></i></div>
       </div>
       <div class="input-group input-group-icon">
@@ -53,14 +53,14 @@
       <div class="col-half">
         <h4>Gender</h4>
         <div class="input-group">
-          <input type="radio" name="gender" value="male" id="gender-male"/>
+          <input type="radio" name="gender" value="male" id="gender-male" checked="true"/>
           <label for="gender-male">Male</label>
           <input type="radio" name="gender" value="female" id="gender-female"/>
           <label for="gender-female">Female</label>
         </div>
       </div>
     </div>
-    <h4 style="color:  #7ed321;">Address</h4>
+    <h4 style="color:  #ffffff;">Address</h4>
     <div class="input-group">
       <input type="text" placeholder="Street Adress" name="street"/>
     </div>
@@ -87,37 +87,37 @@
       <h4>Tell us about yourself</h4>
       <input type="text" name="Highlight" placeholder="Describe your experiences.....!">
     </div>
-    <div class="row">
-      <h4>Payment Details</h4>
-      <div class="input-group">
-        <input type="radio" name="payment-method" value="card" id="payment-method-card" checked="true"/>
-        <label for="payment-method-card"><span><i class="fa fa-cc-visa"></i>Credit Card</span></label>
-        <input type="radio" name="payment-method" value="paypal" id="payment-method-paypal"/>
-        <label for="payment-method-paypal"> <span><i class="fa fa-cc-paypal"></i>Paypal</span></label>
-      </div>
-      <div class="input-group input-group-icon">
-        <input type="text" placeholder="Card Number" name="card-number" />
-        <div class="input-icon"><i class="fa fa-credit-card"></i></div>
-      </div>
-      <div class="col-half">
-        <div class="input-group input-group-icon">
-          <input type="text" placeholder="Card CVC" name="pin" />
-          <div class="input-icon"><i class="fa fa-user"></i></div>
-        </div>
-      </div>
-      <!-- <div class="col-half">
-        <div class="input-group">
-          <select>
-            <option>01 Jan</option>
-            <option>02 Jan</option>
-          </select>
-          <select>
-            <option>2015</option>
-            <option>2016</option>
-          </select>
-        </div>
-      </div> -->
-    </div>
+{#    <div class="row">#}
+{#      <h4>Payment Details</h4>#}
+{#      <div class="input-group">#}
+{#        <input type="radio" name="payment-method" value="card" id="payment-method-card" checked="true"/>#}
+{#        <label for="payment-method-card"><span><i class="fa fa-cc-visa"></i>Credit Card</span></label>#}
+{#        <input type="radio" name="payment-method" value="paypal" id="payment-method-paypal"/>#}
+{#        <label for="payment-method-paypal"> <span><i class="fa fa-cc-paypal"></i>Paypal</span></label>#}
+{#      </div>#}
+{#      <div class="input-group input-group-icon">#}
+{#        <input type="text" placeholder="Card Number" name="card-number" />#}
+{#        <div class="input-icon"><i class="fa fa-credit-card"></i></div>#}
+{#      </div>#}
+{#      <div class="col-half">#}
+{#        <div class="input-group input-group-icon">#}
+{#          <input type="text" placeholder="Card CVC" name="pin" />#}
+{#          <div class="input-icon"><i class="fa fa-user"></i></div>#}
+{#        </div>#}
+{#      </div>#}
+{#      <!-- <div class="col-half">#}
+{#        <div class="input-group">#}
+{#          <select>#}
+{#            <option>01 Jan</option>#}
+{#            <option>02 Jan</option>#}
+{#          </select>#}
+{#          <select>#}
+{#            <option>2015</option>#}
+{#            <option>2016</option>#}
+{#          </select>#}
+{#        </div>#}
+{#      </div> -->#}
+{#    </div>#}
     <div class="row">
       <h4>Terms and Conditions</h4>
       <div class="input-group">
