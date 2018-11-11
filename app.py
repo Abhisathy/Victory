@@ -29,7 +29,7 @@ app = Flask(__name__)
 app.cfg = json.load(open('config.json', 'r'))
 app.secret_key = json.load(open('config.json', 'r')).get('project_id', 'qwerty')
 app.config['SESSION_TYPE'] = 'filesystem'
-CONSTANTS = imp.load_source('modulename', 'constants.py')
+
 
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
