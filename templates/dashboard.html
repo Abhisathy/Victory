@@ -70,15 +70,15 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
             <h4 class="w3-center">My Profile</h4>
             <p class="w3-center"><img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
              <hr>
-                {% if {{user_detail['full_name'] }} %}
+                {% if user_detail['full_name'] %}
                 <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> {{user_detail['full_name']}}</p>
                 {% endif %}
 
-                {% if {{user_detail['state'] }} %}
+                {% if user_detail['state'] %}
                 <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> {{user_detail['state'] }}, USA</p>
                 {% endif %}
 
-                {% if {{user_detail['dob'] }} %}
+                {% if user_detail['dob'] %}
                 <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> {{ user_detail['dob']}}</p>
                 {% endif %}
 
@@ -104,8 +104,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-container">
             <p><strong>Skills/Hobbies</strong> <button style="padding: 5px; border-radius: 50%; font-size: 20px; width: 40px; height: 40px" onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black">+</button></p>
           <p>
-            <span class="w3-tag w3-small w3-theme-d5">News</span>
-
+            {% if user_detail.get('skill') %}
+              {% for sk in user_detail.get('skill') %}
+                <span class="w3-tag w3-small w3-theme-d5">{{sk}}</span>
+              {% endfor %}
+             {% endif %}
           </p>
         </div>
       </div>
@@ -119,7 +122,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
             class="w3-button w3-display-topright">&times;</span>
             <h2>Add Skills</h2>
           </header>
-          <form class="w3-container" action={{ url_for('add_skill') }}>
+          <form class="w3-container" action="{{ url_for('add_skill') }}" method="post">
             <h6 class="w3-opacity">Enter skill</h6>
             <input type="text" name="skill">
             <button type="submit">Add</button>
