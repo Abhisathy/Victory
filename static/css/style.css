@@ -121,6 +121,14 @@ select option {
   background-color: #7ed321;
   color: #fff;
 }
+.btn {
+  background-color: #7ed321;
+  color: #fff;
+  padding: 1em;
+  line-height: 1.4;
+  border-color: #64ac15;
+  float: right;
+}
 .input-group {
   margin-bottom: 1em;
   zoom: 1;
@@ -205,6 +213,7 @@ select option {
 .col-third:last-of-type {
   padding-right: 0;
 }
+
 @media only screen and (max-width: 540px) {
   .col-half {
     width: 100%;
