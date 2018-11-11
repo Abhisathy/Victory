@@ -12,7 +12,8 @@ from authorizenet.apicontrollers import createTransactionController
 from authorizenet.apicontrollers import *
 from decimal import *
 
-
+# algolia search api
+from algoliasearch import algoliasearch
 
 # twilio for sending msg alert
 from twilio.rest import Client
@@ -30,11 +31,15 @@ app.cfg = json.load(open('config.json', 'r'))
 app.secret_key = json.load(open('config.json', 'r')).get('project_id', 'qwerty')
 app.config['SESSION_TYPE'] = 'filesystem'
 
+# algolia app connection
+client = algoliasearch.Client(app.cfg.get('app_id'), app.cfg.get('admin_api_key'))
+index = client.init_index('posts')
+
 
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home():
-    thought_data, event_data = [], []
+    thought_data, event_data, algo_tot = [], [], []
     # Post and stuff
     try:
         thought_data = []
@@ -57,6 +62,10 @@ def home():
         event_data = []
         print(e)
 
+    algo_tot.extend(thought_data)
+    algo_tot.extend(event_data)
+    index.add_objects(algo_tot)
+
     return render_template('index.html', thought_data=reversed(thought_data), event_data=reversed(event_data))
 
 
@@ -64,7 +73,8 @@ def home():
 def dashboard():
     user_detail = {}
     msg = ""
-    job_data, thought_data, event_data = [], [], []
+    job_data, thought_data, event_data, results = [], [], [], []
+
     show_info = {}
     if 'logged_in' in session:
 
@@ -83,7 +93,6 @@ def dashboard():
 
         if 'tm_type' in dict(request.args):
             tm_type = dict(request.args)['tm_type'][0]
-            print(tm_type)
             show_info['tm_type'] = tm_type
 
             if tm_type == 'resources':
@@ -110,6 +119,20 @@ def dashboard():
                     event_data = []
                     print(e)
 
+        # Post and stuff
+        try:
+            event_data = []
+            event_ref = db.collection('events')
+            for ev_doc in event_ref.get():
+                ev_doc.to_dict()['event_date'] = datetime.strptime(ev_doc.to_dict().get('event_date'),
+                                                                   "%Y-%m-%d").strftime("%B %d, %Y")
+                event_data.append(ev_doc.to_dict())
+        except Exception as e:
+            print(e)
+        if event_data:
+            ev = event_data[-1]
+            event_data = []
+
         if 'tm_type' not in dict(request.args) or tm_type == 'posts':
             # Post and stuff
             try:
@@ -121,9 +144,14 @@ def dashboard():
                 thought_data = []
                 print(e)
 
+        if 'result' in dict(request.args):
+            results = dict(request.args)['result']
+            if results:
+                results = json.loads(results[0])
+
         return render_template('dashboard.html', user_detail=user_detail, msg=msg, job_data=reversed(job_data),
                                thought_data=reversed(thought_data), event_data=reversed(event_data),
-                               show_info=show_info)
+                               show_info=show_info, results=results, ev=ev)
     err = 'Login Required'
     return render_template('index.html', err=err)
 
@@ -154,6 +182,7 @@ def post_thought():
         }
         thoughts = db.collection('thoughts').document(str(thought_id))
         thoughts.set(post_thought)
+        index.add_object(post_thought)
         msg = 'Posted'
         return redirect(url_for('dashboard', msg=msg, tm_type='posts'))
     msg = 'Unable to post'
@@ -211,14 +240,12 @@ def add_event():
         }
         events = db.collection('events').document(str(event_id))
         events.set(event_details)
-        print(event_details)
+        index.add_object(event_details)
         user_all = db.collection('users')
         for usr in user_all.get():
             msg = ''
-            print(usr.id, usr.to_dict())
             full_name = usr.to_dict().get('full_name')
             contact = usr.to_dict().get('phone')
-            print("phone", contact)
             msg += '\nHi {}\n New Event has been Posted! Check it out\nEvent Name {}\n Event Date:{}!!\n Event ' \
                    'Description: {}\n '.format(full_name, request.form.get('event_name'),
                                                request.form.get('event_date'),
@@ -236,7 +263,6 @@ def add_event():
 def add_skill():
     if request.method == "POST":
         user_r = db.collection('users').document(session['username'])
-        print("Email", session['username'])
         try:
             skill = user_r.get().get('skill')
             skill.append(request.form.get('skill'))
@@ -244,9 +270,7 @@ def add_skill():
             skill = [request.form.get('skill')]
         user_r.set({'skill': skill}, merge=True)
         msg = 'Added successfully'
-        print(msg)
         return redirect(url_for('dashboard', msg=msg))
-    print('error')
     return redirect(url_for('dashboard'))
 
 
@@ -327,11 +351,26 @@ def page_not_found(e):
 
 @app.route('/donate')
 def donate():
-    return render_template('donate.html',loginID = CONSTANTS.apiLoginId, clientkey = CONSTANTS.transactionKey)
+    return render_template('donate.html', loginID=CONSTANTS.apiLoginId, clientkey=CONSTANTS.transactionKey)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def algolia_search():
+    result = []
+    sol = {}
+    phrase = str(request.form.get('search'))
+    try:
+        res = index.search(phrase)
+        for i, hits in enumerate(res.get('hits')):
+            result.append(hits)
+            if i==1:
+                break
+    except:
+        pass
+    return redirect(url_for('dashboard', result=json.dumps(result)))
 
 
 def send_alert(body, contact):
-    print(app.cfg.get('account_sid'), app.cfg.get('auth_token'))
     client = Client(app.cfg.get('account_sid'), app.cfg.get('auth_token'))
     try:
         message = client.messages.create(
@@ -372,7 +411,6 @@ def charge_credit_card():
     creditCard.cardNumber = request.form.get('card-number')
     creditCard.expirationDate = "{}-{}".format(request.form.get('card_yy'),request.form.get('card_mm'))
     creditCard.cardCode = request.form.get('pin')
-
 
     # Add the payment data to a paymentType object
     payment = apicontractsv1.paymentType()
@@ -639,7 +677,6 @@ def debit_bank_account(amount):
         print('Null Response.')
 
     return None
-
 
 
 if __name__ == "__main__":

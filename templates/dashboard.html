@@ -30,8 +30,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
     </div>
   </div>
   <div class="w3-dropdown-hover w3-hide-small w3-center" style="margin-top: 0.5rem">
-    <form>
-      <input type="text" style="padding-left: 2px" placeholder="Find friends" name="find_friends">
+    <form action="/search" method="post">
+      <input type="text" style="padding-left: 2px" placeholder="Search Events and Posts" name="search">
       <button type="submit" style="border-radius:25%; padding: 5px;margin-bottom: 2px" class="w3-button w3-white"><i class="fa fa-search"></i></button>
     </form>
   </div>
@@ -143,9 +143,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <p><strong>Hey!</strong></p>
         <p>A new event has been posted, Check it out!</p>
       </div>
-    
+
+    </div>
     <!-- End Left Column -->
-    <div class="w3-col m7">
+    {% if err  or msg %}
+        <div class="w3-col m7">
         <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
@@ -159,8 +161,37 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
           </div>
         </div>
       </div>
-
     </div>
+        {% endif %}
+
+    {% if results %}
+    <div class="w3-col m7">
+        <div class="w3-row-padding">
+        <div class="w3-col m12">
+            <h3>Search Results</h3>
+        {% for th in results %}
+        <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+            <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
+            <span class="w3-right w3-opacity">{{th.get('date') |safe}}</span>
+            <h4>{{th.get('mem_uploaded')|safe}}</h4><br>
+            <hr class="w3-clear">
+            {% if th.get('thought')|safe %}
+            <p>{{th.get('thought')|safe}} </p>
+            {% elif th.get('event_name')|safe %}
+            <p>{{th.get('event_name')|safe}} </p>
+            <p>{{th.get('event_details')|safe}} </p>
+            <p>{{th.get('event_date')|safe}} </p>
+            {% endif %}
+            <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button>
+            <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button>
+        </div>
+        {% endfor %}
+         </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
     
     <!-- Middle Column -->
     <div class="w3-col m7">
@@ -265,9 +296,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-container">
           <p>Upcoming Events:</p>
           <img src="{{ url_for('static', filename='img/upcoming.jpg') }}" alt="Forest" style="width:100%;">
-          <p><strong>Holiday</strong></p>
-          <p>Friday 15:00</p>
-          <p><button class="w3-button w3-block w3-theme-l4">Info</button></p>
+          {% if ev %}
+            <p><strong>{{ev.get('event_name')}}</strong></p>
+          <p>{{ev.get('event_date')}}</p>
+          <p><button class="w3-button w3-block w3-theme-l4">{{ev.get('event_description')}}</button></p>
+            {% else %}
+            <p><strong>Event Coming Soon</strong></p>
+            {% endif %}
         </div>
       </div>
       <br>
@@ -299,10 +334,6 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 <br>
 
 <!-- Footer -->
-<footer class="w3-container w3-theme-d3 w3-padding-16">
-  <h5>Footer</h5>
-</footer>
-
 <footer class="w3-container w3-theme-d5">
   <p>Powered by BOSTON HACKS</p>
 </footer>
