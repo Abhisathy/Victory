@@ -64,7 +64,7 @@ def user_signup():
                 'email': request.form.get('email'),
                 'password': pbkdf2_sha256.hash(str(request.form.get('password'))),
                 'dob': '{}-{}-{}'.format(request.form.get("dob_mm"),
-                                         request.form.get("dob_mm"),
+                                         request.form.get("dob_dd"),
                                          request.form.get("dob_yy")),
                 'gender': request.form.get("gender"),
                 'street': request.form.get("street"),
