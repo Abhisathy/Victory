@@ -220,15 +220,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       
       <div class="w3-card w3-round w3-white w3-center">
         <div class="w3-container">
-          <p>Friend Request</p>
+          <p>Help the Community</p>
           <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" alt="Avatar" style="width:50%"><br>
-          <span>Jane Doe</span>
+          <span>{{ name }}</span>
           <div class="w3-row w3-opacity">
-            <div class="w3-half">
-              <button class="w3-button w3-block w3-green w3-section" title="Accept"><i class="fa fa-check"></i></button>
-            </div>
-            <div class="w3-half">
-              <button class="w3-button w3-block w3-red w3-section" title="Decline"><i class="fa fa-remove"></i></button>
+            <div class="w3-button">
+              <button class="w3-button w3-block w3-green w3-section" title="Accept"><i class="fa fa-donate">Donate</i></button>
             </div>
           </div>
         </div>
