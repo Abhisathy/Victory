@@ -333,9 +333,9 @@ def charge_credit_card(amount):
     response = createtransactioncontroller.getresponse()
     
     if (response.messages.resultCode=="Ok"):
-        print"Transaction ID : %s"% response.transactionResponse.transId
+        print("Transaction ID : {}".format(response.transactionResponse.transId))
     else:
-        print"response code: %s"% response.messages.resultCode
+        print("response code : {}".format(response.messages.resultCode))
 
 
 """
