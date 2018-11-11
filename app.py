@@ -202,6 +202,9 @@ def logout():
 def page_not_found(e):
     return ''
 
+@app.route('/donate')
+def donate():
+    return render_template('donate.html')
 
 """
 Charge a credit card
