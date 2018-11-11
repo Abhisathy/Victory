@@ -197,6 +197,9 @@ def logout():
     msg = 'You have been successfully logged out.'
     return redirect(url_for('home', msg=msg))
 
+@app.route('/Add_skill')
+def add_skill():
+    return ''
 
 @app.errorhandler(404)
 def page_not_found(e):
