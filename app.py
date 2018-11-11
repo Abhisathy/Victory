@@ -154,6 +154,9 @@ def user_login():
 def user_signup():
     if request.method == 'POST':
         try:
+            phone = str(request.form.get("phone")) if len(request.form.get("phone"))==10 else None
+            if phone is None:
+                return render_template('signup.html', err=" Please check the phone number")
             user_details = {
                 'full_name': request.form.get('full_name'),
                 'email': request.form.get('email'),
@@ -166,11 +169,12 @@ def user_signup():
                 'city': request.form.get("city"),
                 'state': request.form.get("state"),
                 'zip': request.form.get("zip"),
+                'phone': phone,
                 'acc_type': request.form.get('acc_type'),
-                'about': request.form.get('Highlight'),
-                'pay_mode': request.form.get('payment-method'),
-                'card_number': pbkdf2_sha256.hash(str(request.form.get('card-number'))),
-                'pin': pbkdf2_sha256.hash(str('pin'))
+                'about': request.form.get('Highlight')
+                # 'pay_mode': request.form.get('payment-method'),
+                # 'card_number': pbkdf2_sha256.hash(str(request.form.get('card-number'))),
+                # 'pin': pbkdf2_sha256.hash(str('pin'))
             }
             user = db.collection('users').document(str(request.form.get('email')))
             user.set(user_details)
