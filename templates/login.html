@@ -1,41 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" >
-
-<head>
-  <meta charset="UTF-8">
-  <title>Login Form</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-</head>
-
+<html>
+<title>Victory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <body>
-  <h1 style="color: black"><strong><center>Victory</center></strong></h1>
-  <br><br>
-  <div class="login">
-		<div class="login-screen">
-			<div class="app-title">
-				<h1>Login</h1>
-			</div>
+
+<header class="w3-container w3-deep-purple">
+  <h1><center>Victory</center></h1>
+</header>
+
+<div class="w3-container w3-half w3-margin-top w3-animate-left w3-display-bottommiddle">
+<form class="w3-container w3-card-4 " action="{{url_for('user_login')}}">
+<h2>Login</h2>
             {% if err %}
                 <p style="color: red;font-style: italic;">{{ err }}</p>
             {% elif msg %}
                 <p style="color: blue;font-style: italic;">{{ msg }}</p>
             {% endif %}
+<p>
+<input class="w3-input" type="email" style="width:90%" required>
+<label>Email</label></p>
+<p>
+<input class="w3-input" type="password" style="width:90%" required>
+<label>Password</label></p>
+<p><a class="w3-button w3-section w3-purple w3-ripple w3-left" href="{{ url_for('user_signup') }}"> Signup </a></p>
 
-            <form class="login-form" action="/userLogin" method="post">
-				<div class="control-group">
-					<input type="email" class="login-field" placeholder="Email Address" id="email" name="email">
-					<label class="login-field-icon fui-user"></label>
-				</div>
-				<div class="control-group">
-					<input type="password" class="login-field" name="password"  placeholder="Password" id="password">
-					<label class="login-field-icon fui-lock"></label>
-				</div>
-				<button type="submit" class="btn btn-primary btn-large btn-block">login</button>
-			</form>
-		</div>
-		<p style="color: black">Not a member?
-            <a class="btn btn-primary btn-large btn-block" style="text-align: center" href="{{url_for('user_signup')}}">Signup</a>
-        </p>
-  </div>
+<p>
+<button class="w3-button w3-section w3-deep-purple w3-ripple w3-right" type="submit"> Log in </button></p>
+
+</form>
+
+</div>
 </body>
 </html>
