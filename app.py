@@ -73,6 +73,7 @@ def home():
 def dashboard():
     user_detail = {}
     msg = ""
+    ev=dict()
     job_data, thought_data, event_data, results = [], [], [], []
 
     show_info = {}
@@ -282,16 +283,18 @@ def user_login():
             user = user_ref.get()
         except Exception:
             err = 'User not found'
-            return render_template('login.html', error=err)
-        if not pbkdf2_sha256.verify(request.form.get('password'), user.get('password')):
-            err = 'Password or Username is incorrect.'
-            return render_template('login.html', error=err)
-        else:
-            session['username'] = user.get('email')
-            session['acc_type'] = user.get('acc_type')
-            session['logged_in'] = True
-            msg = 'You have been successfully logged'
-            return redirect(url_for('dashboard', msg=msg))
+            return render_template('login.html', err=err)
+        if request.form.get('password'):
+            if not pbkdf2_sha256.verify(request.form.get('password'), user.get('password')):
+                err = 'Password or Username is incorrect.'
+                return render_template('login.html', err=err)
+            else:
+                session['username'] = user.get('email')
+                session['acc_type'] = user.get('acc_type')
+                session['logged_in'] = True
+                msg = 'You have been successfully logged'
+                return redirect(url_for('dashboard', msg=msg))
+        return render_template('login.html', err="Unable to login")
     return render_template('login.html')
 
 
