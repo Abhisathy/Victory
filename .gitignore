@@ -14,5 +14,5 @@ venv/*
 # pyc
 *.pyc
 
-# constant file
-constants.py
+# constant fil
+**/constants.py
