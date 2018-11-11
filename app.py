@@ -5,6 +5,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from passlib.hash import pbkdf2_sha256
 from flask import Flask, render_template, request, session, flash, url_for, redirect, make_response
+
 from authorizenet import apicontractsv1
 from authorizenet.apicontrollers import createTransactionController
 
@@ -31,43 +32,69 @@ def home():
 def dashboard():
     user_detail = {}
     msg = ""
+    job_data, thought_data, event_data = [], [], []
+    show_info = {}
+    if session['logged_in']:
 
-    # User details
-    try:
-        user_ref = db.collection('users').document(session['username']).get()
-        user_detail['full_name'] = user_ref.get('full_name')
-        user_detail['state'] = user_ref.get('state')
-        user_detail['dob'] = datetime.strptime(user_ref.get('dob'), "%m-%d-%Y").strftime("%B %d, %Y")
-    except Exception as e:
-        user_detail = {}
-        print(e)
+        if 'msg' in dict(request.args):
+            msg = dict(request.args)['msg']
 
-    # Post and stuff
+        # User details
+        try:
+            user_ref = db.collection('users').document(session['username']).get()
+            user_detail['full_name'] = user_ref.get('full_name')
+            user_detail['state'] = user_ref.get('state')
+            user_detail['dob'] = datetime.strptime(user_ref.get('dob'), "%m-%d-%Y").strftime("%B %d, %Y")
+        except Exception as e:
+            print(e)
+        print(user_detail)
 
-    try:
-        thought_data = []
-        thought_ref = db.collection('thoughts')
-        for th_doc in thought_ref.get():
-            thought_data.append(th_doc.to_dict())
-    except Exception as e:
-        thought_data = []
-        print(e)
-    print(thought_data)
-    # jobs and stuff
-    try:
-        job_data = []
-        job_ref = db.collection('jobs')
-        for job_doc in job_ref.get():
-            job_data.append(job_doc.to_dict())
-    except Exception as e:
-        job_data = []
-        print(e)
-    print(job_data)
+        if 'tm_type' in dict(request.args):
+            tm_type = dict(request.args)['tm_type'][0]
+            print(tm_type)
+            show_info['tm_type'] = tm_type
 
-    if 'msg' in dict(request.args):
-        msg = dict(request.args)['msg']
-    return render_template('dashboard.html', user_detail=user_detail, msg=msg, job_data=job_data,
-                           thought_data=thought_data)
+            if tm_type == 'resources':
+                # jobs and stuff
+                try:
+                    job_data = []
+                    job_ref = db.collection('jobs')
+                    for job_doc in job_ref.get():
+                        job_data.append(job_doc.to_dict())
+                except Exception as e:
+                    job_data = []
+                    print(e)
+                print(job_data)
+
+            if tm_type == 'events':
+                # Post and stuff
+                try:
+                    event_data = []
+                    event_ref = db.collection('events')
+                    for ev_doc in event_ref.get():
+                        ev_doc.to_dict()['event_date'] = datetime.strptime(ev_doc.to_dict().get('event_date'),
+                                                                           "%m/%d/%Y").strftime("%B %d, %Y")
+                        event_data.append(ev_doc.to_dict())
+                except Exception as e:
+                    event_data = []
+                    print(e)
+                print(event_data)
+        if 'tm_type' not in dict(request.args) or tm_type == 'posts':
+            # Post and stuff
+            try:
+                thought_data = []
+                thought_ref = db.collection('thoughts')
+                for th_doc in thought_ref.get():
+                    thought_data.append(th_doc.to_dict())
+            except Exception as e:
+                thought_data = []
+                print(e)
+            print(thought_data)
+
+        return render_template('dashboard.html', user_detail=user_detail, msg=msg, job_data=reversed(job_data),
+                               thought_data=reversed(thought_data), event_data=reversed(event_data), show_info=show_info)
+    err = 'Login Required'
+    return render_template('index.html', err=err)
 
 
 @app.route('/post_thought', methods=['GET', 'POST'])
@@ -91,7 +118,8 @@ def post_thought():
         post_thought = {
             'mem_uploaded': full_name,
             'thought': request.form.get('thought'),
-            'image_name': 'img/{}'.format(str(filename))
+            'image_name': 'img/{}'.format(str(filename)),
+            'date': datetime.datetime.today().strftime("%B %d, %Y")
         }
         thoughts = db.collection('thoughts').document(str(thought_id))
         thoughts.set(post_thought)
@@ -119,7 +147,8 @@ def job_posting():
             'mem_uploaded': full_name,
             'title': request.form.get('title'),
             'description': request.form.get('description'),
-            'url': request.form.get('url')
+            'url': request.form.get('url'),
+            'date': datetime.datetime.today().strftime("%B %d, %Y")
         }
         jobs = db.collection('jobs').document(str(job_id))
         jobs.set(job_details)
@@ -127,6 +156,33 @@ def job_posting():
         return render_template('dashboard.html', msg=msg)
     msg = 'Unable to post the job'
     return render_template('dashboard.html', msg=msg)
+
+
+@app.route('/addEvent', methods=['GET', 'POST'])
+def add_event():
+    if request.method == 'POST':
+        events = db.collection('events')
+        try:
+            for event in events.get():
+                event_id = int(event.id)
+            event_id += 1
+        except:
+            event_id = 0
+
+        user_ref = db.collection('users').document(session['username']).get()
+        full_name = user_ref.get('full_name')
+
+        event_details = {
+            'mem_uploaded': full_name,
+            'event_name': request.form.get('event_name'),
+            'event_details': request.form.get('event_details'),
+            'event_date': request.form.get('event_date')
+        }
+        events = db.collection('events').document(str(event_id))
+        events.set(event_details)
+        msg = 'Added Event successfully'
+        return redirect(url_for('dashboard', msg=msg))
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/userLogin', methods=['GET', 'POST'])
@@ -194,6 +250,7 @@ def user_signup():
 def logout():
     session.pop('username', None)
     session.pop('logged_in', None)
+    session.clear()
     msg = 'You have been successfully logged out.'
     return redirect(url_for('home', msg=msg))
 

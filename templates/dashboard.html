@@ -70,9 +70,18 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
             <h4 class="w3-center">My Profile</h4>
             <p class="w3-center"><img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
              <hr>
-             <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> {{user_detail['full_name']}}</p>
-             <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> {{user_detail['state'] }}, USA</p>
-             <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> {{ user_detail['dob']}}</p>
+                {% if {{user_detail['full_name'] }} %}
+                <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> {{user_detail['full_name']}}</p>
+                {% endif %}
+
+                {% if {{user_detail['state'] }} %}
+                <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> {{user_detail['state'] }}, USA</p>
+                {% endif %}
+
+                {% if {{user_detail['dob'] }} %}
+                <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> {{ user_detail['dob']}}</p>
+                {% endif %}
+
             {% else %}
             <h4 class="w3-center">Hello </h4>
             {% endif %}
@@ -83,39 +92,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       <!-- Accordion -->
       <div class="w3-card w3-round">
         <div class="w3-white">
-          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i> My Groups</button>
-          <div id="Demo1" class="w3-hide w3-container">
-            <p>Some text..</p>
-          </div>
-          <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-calendar-check-o fa-fw w3-margin-right"></i> My Events</button>
-          <div id="Demo2" class="w3-hide w3-container">
-            <p>Some other text..</p>
-          </div>
-          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Photos</button>
-          <div id="Demo3" class="w3-hide w3-container">
-         <div class="w3-row-padding">
-         <br>
-           <div class="w3-half">
-             <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" style="width:100%" class="w3-margin-bottom">
-           </div>
-         </div>
-          </div>
-        </div>      
+          <a href={{url_for('dashboard',tm_type='posts')}} class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i> Timeline Posts</a>
+          <a href={{url_for('dashboard',tm_type='resources')}} class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-calendar-check-o fa-fw w3-margin-right"></i> Helpful Resources</a>
+          <a href={{url_for('dashboard',tm_type='events')}} class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> Events</a>
+        </div>
       </div>
       <br>
       
@@ -125,14 +105,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
             <p><strong>Skills/Hobbies</strong> <button style="padding: 5px; border-radius: 50%; font-size: 20px; width: 40px; height: 40px" onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black">+</button></p>
           <p>
             <span class="w3-tag w3-small w3-theme-d5">News</span>
-            <span class="w3-tag w3-small w3-theme-d4">Veterans</span>
-            <span class="w3-tag w3-small w3-theme-d3">Labels</span>
-            <span class="w3-tag w3-small w3-theme-d2">Games</span>
-            <span class="w3-tag w3-small w3-theme-d1">Friends</span>
-            <span class="w3-tag w3-small w3-theme-l2">Food</span>
-            <span class="w3-tag w3-small w3-theme-l3">Design</span>
-            <span class="w3-tag w3-small w3-theme-l4">Art</span>
-            <span class="w3-tag w3-small w3-theme-l5">Photos</span>
+
           </p>
         </div>
       </div>
@@ -192,14 +165,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-                {% if session.get("acc_type") and session["logged_in"] %}
+                {% if session.get("acc_type") and session["logged_in"] and (not show_info or show_info.get("tm_type")=="posts")%}
                 <form action={{url_for("post_thought")}} method="post" enctype="multipart/form-data">
                     <h6 class="w3-opacity">How are you feeling today?</h6>
                     <input type="text" class="w3-border w3-padding" name="thought" placeholder="Feeling Blue" required>
                     <input type="file" name="fileToUpload" id="fileToUpload">
                     <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i> Post</button>
                 </form>
-                {% elif session.get("acc_type") and (session["acc_type"]=='user') and session["logged_in"] %}
+                {% elif session.get("acc_type") and (session["acc_type"]=='user') and session["logged_in"] and show_info.get("tm_type")=="jobs"%}
                 <form action={{url_for("job_posting")}} method="post">
                     <h6 class="w3-opacity">Post a Job to Help Veterans</h6>
                     <input type="text" class="w3-border w3-padding" name='job_title' placeholder="Job Title" required>
@@ -213,39 +186,71 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         </div>
       </div>
 
-       {% if thought_data %}
+   {% if thought_data %}
        {% for th in thought_data %}
-      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-        <span class="w3-right w3-opacity">32 min</span>
-        <h4>{{th.get('mem_uploaded')}}</h4><br>
-        <hr class="w3-clear">
-        {% if th.get("image_name") != 'img/' %}
-        <img src={{url_for('static', filename=th.get('image_name'))}} style="width:100%" class="w3-margin-bottom">
-        {% endif %}
-          <p>{{th.get('thought')}} </p>
-        <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button> 
-        <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button> 
-      </div>
+        <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+            <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
+            <span class="w3-right w3-opacity">{{th.get('date')}}</span>
+            <h4>{{th.get('mem_uploaded')}}</h4><br>
+            <hr class="w3-clear">
+            {% if th.get("image_name") != 'img/' %}
+            <img src={{url_for('static', filename=th.get('image_name'))}} style="width:100%" class="w3-margin-bottom">
+            {% endif %}
+            <p>{{th.get('thought')}} </p>
+            <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button>
+            <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button>
+        </div>
         {% endfor %}
-        {% endif %}
-      
+    {% endif %}
+
+    {% if job_data %}
+       {% for th in job_data %}
+        <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+            <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
+            <span class="w3-right w3-opacity">{{th.get('date')}}</span>
+            <h4>{{th.get('mem_uploaded')}}</h4><br>
+            <hr class="w3-clear">
+            <p>{{th.get('title')}} </p>
+            <p>{{th.get('description')}} </p>
+            <p>{{th.get('url')}} </p>
+            <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button>
+            <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if event_data %}
+       {% for th in event_data %}
+        <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+            <img src="{{ url_for('static', filename='img/veteranAvatar.png') }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
+            <span class="w3-right w3-opacity">{{th.get('event_date')}}</span>
+            <h4>{{th.get('mem_uploaded')}}</h4><br>
+            <hr class="w3-clear">
+            <p>{{th.get('event_name')}} </p>
+            <p>{{th.get('event_details')}} </p>
+            <p>{{th.get('event_date')}} </p>
+            <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button>
+            <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <!-- End Middle Column -->
     </div>
     
     <!-- Right Column -->
     <div class="w3-col m2">
       <div class="w3-card w3-round w3-white w3-hide-small">
-            <form class="w3-container w3-padding" action="">
+            <form class="w3-container w3-padding" action="{{ url_for('add_event') }}" method="post">
               <h4 class="w3-opacity">New Event!</h4>
               <h6 class="w3-opacity">Event name:</h6>
-              <input type="text"  name="EventName">
+              <input type="text"  name="event_name">
               <h6 class="w3-opacity">Event details:</h6>
-              <input type="text"  name="EventDetails">
+              <input type="text"  name="event_details">
               <h6 class="w3-opacity">Event date:</h6>
-              <input type="date" class="w3-border w3-padding" name="date">
+              <input type="date" class="w3-border w3-padding" name="event_date">
               <br><br>
-              <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>  Post</button>
+              <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i> Post</button>
             </form>
         </div>
     </div>
