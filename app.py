@@ -42,7 +42,7 @@ def user_login():
             session['doctor'] = True
             session['logged_in'] = True
             msg = 'You have been successfully logged'
-            return redirect(url_for('dashboard.html', msg=msg))
+            return redirect(url_for('user_login', msg=msg))
     return render_template('login.html')
 
 
@@ -67,12 +67,13 @@ def user_signup():
         user = db.collection('users').document(str(request.form.get('email')))
         user.set(user_details)
         session['username'] = user.get('email')
-        session['veteran'] = True
+        session['acc_type'] = request.form.get('acc_type')
         session['logged_in'] = True
         msg = 'You have been successfully logged'
-        return redirect(url_for('dashboard.html', msg=msg))
+        return redirect(url_for('dashboard', msg=msg))
 
     return render_template('signup.html',message="Unsuccessful! Try again")
+
 
 
 @app.route('/jobPosting', methods=['GET', 'POST'])
