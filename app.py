@@ -6,14 +6,13 @@ from firebase_admin import firestore
 from passlib.hash import pbkdf2_sha256
 from flask import Flask, render_template, request, session, flash, url_for, redirect, make_response
 
+# authorizenet
 from authorizenet import apicontractsv1
 from authorizenet.apicontrollers import createTransactionController
 from authorizenet.apicontrollers import *
 from decimal import *
-
-import imp
-
-
+# twilio for sending msg alert
+from twilio.rest import Client
 
 # Use a service account
 cred = credentials.Certificate('config.json')
@@ -24,6 +23,7 @@ db = firestore.client()
 
 # flask connection
 app = Flask(__name__)
+app.cfg = json.load(open('config.json', 'r'))
 app.secret_key = json.load(open('config.json', 'r')).get('project_id', 'qwerty')
 app.config['SESSION_TYPE'] = 'filesystem'
 CONSTANTS = imp.load_source('modulename', 'constants.py')
@@ -51,6 +51,7 @@ def dashboard():
             user_detail['full_name'] = user_ref.get('full_name')
             user_detail['state'] = user_ref.get('state')
             user_detail['dob'] = datetime.strptime(user_ref.get('dob'), "%m-%d-%Y").strftime("%B %d, %Y")
+            user_detail['skill'] = user_ref.get('skill')
         except Exception as e:
             print(e)
         print(user_detail)
@@ -79,7 +80,7 @@ def dashboard():
                     event_ref = db.collection('events')
                     for ev_doc in event_ref.get():
                         ev_doc.to_dict()['event_date'] = datetime.strptime(ev_doc.to_dict().get('event_date'),
-                                                                           "%m/%d/%Y").strftime("%B %d, %Y")
+                                                                           "%Y-%m-%d").strftime("%B %d, %Y")
                         event_data.append(ev_doc.to_dict())
                 except Exception as e:
                     event_data = []
@@ -187,6 +188,22 @@ def add_event():
         }
         events = db.collection('events').document(str(event_id))
         events.set(event_details)
+        print(event_details)
+        user_all = db.collection('users')
+        for usr in user_all.get():
+            msg = ''
+            print(usr.id, usr.to_dict())
+            full_name = usr.to_dict().get('full_name')
+            contact = usr.to_dict().get('phone')
+            print("phone", contact)
+            msg += '\nHi {}\n New Event has been Posted! Check it out\nEvent Name {}\n Event Date:{}!!\n Event ' \
+                   'Description: {}\n '.format(full_name, request.form.get('event_name'),
+                                               request.form.get('event_date'),
+                                               request.form.get('event_details'))
+            if send_alert(msg, contact):
+                print(True)
+            else:
+                print(False)
         msg = 'Added Event successfully'
         return redirect(url_for('dashboard', msg=msg, tm_type='events'))
     return redirect(url_for('dashboard'))
@@ -195,13 +212,14 @@ def add_event():
 @app.route('/add_skill', methods=['GET', 'POST'])
 def add_skill():
     if request.method == "POST":
-        user_ref = db.collection('users').document(request.form.get('email'))
-        if user_ref.get().get('skill'):
-            skill = user_ref.get().get('skill')
-            skill.update(request.form.get('skill'))
-        else:
+        user_r = db.collection('users').document(session['username'])
+        print("Email", session['username'])
+        try:
+            skill = user_r.get().get('skill')
+            skill.append(request.form.get('skill'))
+        except:
             skill = [request.form.get('skill')]
-        user_ref.set({'skill': skill}, merge=True)
+        user_r.set({'skill': skill}, merge=True)
         msg = 'Added successfully'
         print(msg)
         return redirect(url_for('dashboard', msg=msg))
@@ -289,6 +307,20 @@ def donate():
     return render_template('donate.html',loginID = CONSTANTS.apiLoginId, clientkey = CONSTANTS.transactionKey)
 
 
+def send_alert(body, contact):
+    print(app.cfg.get('account_sid'), app.cfg.get('auth_token'))
+    client = Client(app.cfg.get('account_sid'), app.cfg.get('auth_token'))
+    try:
+        message = client.messages.create(
+            from_=app.cfg.get('from_'),
+            body=body,
+            to='+1{}'.format(contact)
+        )
+        return message.sid
+    except:
+        return False
+
+
 """
 Charge a credit card
 """
@@ -315,6 +347,7 @@ Charge a credit card
 #     creditCard.expirationDate = "2020-12"
 #     creditCard.cardCode = "123"
 
+<<<<<<< HEAD
 #     # Add the payment data to a paymentType object
 #     payment = apicontractsv1.paymentType()
 #     payment.creditCard = creditCard
@@ -576,10 +609,271 @@ Charge a credit card
 #         print('Null Response.')
 
 #     return response
+=======
+    # Add the payment data to a paymentType object
+    payment = apicontractsv1.paymentType()
+    payment.creditCard = creditCard
+
+    # Create order information
+    order = apicontractsv1.orderType()
+    order.invoiceNumber = "10101"
+    order.description = "Golf Shirts"
+
+    # Set the customer's Bill To address
+    customerAddress = apicontractsv1.customerAddressType()
+    customerAddress.firstName = "Ellen"
+    customerAddress.lastName = "Johnson"
+    customerAddress.company = "Souveniropolis"
+    customerAddress.address = "14 Main Street"
+    customerAddress.city = "Pecan Springs"
+    customerAddress.state = "TX"
+    customerAddress.zip = "44628"
+    customerAddress.country = "USA"
+
+    # Set the customer's identifying information
+    customerData = apicontractsv1.customerDataType()
+    customerData.type = "individual"
+    customerData.id = "99999456654"
+    customerData.email = "EllenJohnson@example.com"
+
+    # Add values for transaction settings
+    duplicateWindowSetting = apicontractsv1.settingType()
+    duplicateWindowSetting.settingName = "duplicateWindow"
+    duplicateWindowSetting.settingValue = "600"
+    settings = apicontractsv1.ArrayOfSetting()
+    settings.setting.append(duplicateWindowSetting)
+
+    # setup individual line items
+    line_item_1 = apicontractsv1.lineItemType()
+    line_item_1.itemId = "12345"
+    line_item_1.name = "first"
+    line_item_1.description = "Here's the first line item"
+    line_item_1.quantity = "2"
+    line_item_1.unitPrice = "12.95"
+    line_item_2 = apicontractsv1.lineItemType()
+    line_item_2.itemId = "67890"
+    line_item_2.name = "second"
+    line_item_2.description = "Here's the second line item"
+    line_item_2.quantity = "3"
+    line_item_2.unitPrice = "7.95"
+
+    # build the array of line items
+    line_items = apicontractsv1.ArrayOfLineItem()
+    line_items.lineItem.append(line_item_1)
+    line_items.lineItem.append(line_item_2)
+
+    # Create a transactionRequestType object and add the previous objects to it.
+    transactionrequest = apicontractsv1.transactionRequestType()
+    transactionrequest.transactionType = "authOnlyTransaction"
+    transactionrequest.amount = amount
+    transactionrequest.payment = payment
+    transactionrequest.order = order
+    transactionrequest.billTo = customerAddress
+    transactionrequest.customer = customerData
+    transactionrequest.transactionSettings = settings
+    transactionrequest.lineItems = line_items
+
+    # Assemble the complete transaction request
+    createtransactionrequest = apicontractsv1.createTransactionRequest()
+    createtransactionrequest.merchantAuthentication = merchantAuth
+    createtransactionrequest.refId = "MerchantID-0001"
+    createtransactionrequest.transactionRequest = transactionrequest
+    # Create the controller
+    createtransactioncontroller = createTransactionController(
+        createtransactionrequest)
+    createtransactioncontroller.execute()
+
+    response = createtransactioncontroller.getresponse()
+
+    if response is not None:
+        # Check to see if the API request was successfully received and acted upon
+        if response.messages.resultCode == "Ok":
+            # Since the API request was successful, look for a transaction response
+            # and parse it to display the results of authorizing the card
+            if hasattr(response.transactionResponse, 'messages') is True:
+                print(
+                    'Successfully created transaction with Transaction ID: %s'
+                    % response.transactionResponse.transId)
+                print('Transaction Response Code: %s' %
+                      response.transactionResponse.responseCode)
+                print('Message Code: %s' %
+                      response.transactionResponse.messages.message[0].code)
+                print('Description: %s' % response.transactionResponse.
+                      messages.message[0].description)
+            else:
+                print('Failed Transaction.')
+                if hasattr(response.transactionResponse, 'errors') is True:
+                    print('Error Code:  %s' % str(response.transactionResponse.
+                                                  errors.error[0].errorCode))
+                    print(
+                        'Error message: %s' %
+                        response.transactionResponse.errors.error[0].errorText)
+        # Or, print errors if the API request wasn't successful
+        else:
+            print('Failed Transaction.')
+            if hasattr(response, 'transactionResponse') is True and hasattr(
+                    response.transactionResponse, 'errors') is True:
+                print('Error Code: %s' % str(
+                    response.transactionResponse.errors.error[0].errorCode))
+                print('Error message: %s' %
+                      response.transactionResponse.errors.error[0].errorText)
+            else:
+                print('Error Code: %s' %
+                      response.messages.message[0]['code'].text)
+                print('Error message: %s' %
+                      response.messages.message[0]['text'].text)
+    else:
+        print('Null Response.')
+
+    return response
+
+
+"""
+Debit a bank account
+"""
+
+import random
+
+
+def debit_bank_account(amount):
+    """
+    Debit a bank account
+    """
+
+    # Create a merchantAuthenticationType object with authentication details
+    # retrieved from the constants file
+    merchantAuth = apicontractsv1.merchantAuthenticationType()
+    merchantAuth.name = CONSTANTS.apiLoginId
+    merchantAuth.transactionKey = CONSTANTS.transactionKey
+
+    # Create the payment data for a bank account
+    bankAccount = apicontractsv1.bankAccountType()
+    accountType = apicontractsv1.bankAccountTypeEnum
+    bankAccount.accountType = accountType.checking
+    bankAccount.routingNumber = "121042882"
+    bankAccount.accountNumber = str(random.randint(10000, 999999999999))
+    bankAccount.nameOnAccount = "John Doe"
+
+    # Add the payment data to a paymentType object
+    payment = apicontractsv1.paymentType()
+    payment.bankAccount = bankAccount
+
+    # Create order information
+    order = apicontractsv1.orderType()
+    order.invoiceNumber = "10101"
+    order.description = "Golf Shirts"
+
+    # Set the customer's Bill To address
+    customerAddress = apicontractsv1.customerAddressType()
+    customerAddress.firstName = "Ellen"
+    customerAddress.lastName = "Johnson"
+    customerAddress.company = "Souveniropolis"
+    customerAddress.address = "14 Main Street"
+    customerAddress.city = "Pecan Springs"
+    customerAddress.state = "TX"
+    customerAddress.zip = "44628"
+    customerAddress.country = "USA"
+
+    # Set the customer's identifying information
+    customerData = apicontractsv1.customerDataType()
+    customerData.type = "individual"
+    customerData.id = "99999456654"
+    customerData.email = "EllenJohnson@example.com"
+
+    # Add values for transaction settings
+    duplicateWindowSetting = apicontractsv1.settingType()
+    duplicateWindowSetting.settingName = "duplicateWindow"
+    duplicateWindowSetting.settingValue = "60"
+    settings = apicontractsv1.ArrayOfSetting()
+    settings.setting.append(duplicateWindowSetting)
+
+    # setup individual line items
+    line_item_1 = apicontractsv1.lineItemType()
+    line_item_1.itemId = "12345"
+    line_item_1.name = "first"
+    line_item_1.description = "Here's the first line item"
+    line_item_1.quantity = "2"
+    line_item_1.unitPrice = "12.95"
+    line_item_2 = apicontractsv1.lineItemType()
+    line_item_2.itemId = "67890"
+    line_item_2.name = "second"
+    line_item_2.description = "Here's the second line item"
+    line_item_2.quantity = "3"
+    line_item_2.unitPrice = "7.95"
+
+    # build the array of line items
+    line_items = apicontractsv1.ArrayOfLineItem()
+    line_items.lineItem.append(line_item_1)
+    line_items.lineItem.append(line_item_2)
+
+    # Create a transactionRequestType object and add the previous objects to it.
+    transactionrequest = apicontractsv1.transactionRequestType()
+    transactionrequest.transactionType = "authCaptureTransaction"
+    transactionrequest.amount = amount
+    transactionrequest.payment = payment
+    transactionrequest.order = order
+    transactionrequest.billTo = customerAddress
+    transactionrequest.customer = customerData
+    transactionrequest.transactionSettings = settings
+    transactionrequest.lineItems = line_items
+
+    # Assemble the complete transaction request
+    createtransactionrequest = apicontractsv1.createTransactionRequest()
+    createtransactionrequest.merchantAuthentication = merchantAuth
+    createtransactionrequest.refId = "MerchantID-0001"
+    createtransactionrequest.transactionRequest = transactionrequest
+    # Create the controller
+    createtransactioncontroller = createTransactionController(
+        createtransactionrequest)
+    createtransactioncontroller.execute()
+
+    response = createtransactioncontroller.getresponse()
+
+    if response is not None:
+        # Check to see if the API request was successfully received and acted upon
+        if response.messages.resultCode == "Ok":
+            # Since the API request was successful, look for a transaction response
+            # and parse it to display the results of authorizing the card
+            if hasattr(response.transactionResponse, 'messages') is True:
+                print(
+                    'Successfully created transaction with Transaction ID: %s'
+                    % response.transactionResponse.transId)
+                print('Transaction Response Code: %s' %
+                      response.transactionResponse.responseCode)
+                print('Message Code: %s' %
+                      response.transactionResponse.messages.message[0].code)
+                print('Description: %s' % response.transactionResponse.
+                      messages.message[0].description)
+            else:
+                print('Failed Transaction.')
+                if hasattr(response.transactionResponse, 'errors') is True:
+                    print('Error Code:  %s' % str(response.transactionResponse.
+                                                  errors.error[0].errorCode))
+                    print(
+                        'Error message: %s' %
+                        response.transactionResponse.errors.error[0].errorText)
+        # Or, print errors if the API request wasn't successful
+        else:
+            print('Failed Transaction.')
+            if hasattr(response, 'transactionResponse') is True and hasattr(
+                    response.transactionResponse, 'errors') is True:
+                print('Error Code: %s' % str(
+                    response.transactionResponse.errors.error[0].errorCode))
+                print('Error message: %s' %
+                      response.transactionResponse.errors.error[0].errorText)
+            else:
+                print('Error Code: %s' %
+                      response.messages.message[0]['code'].text)
+                print('Error message: %s' %
+                      response.messages.message[0]['text'].text)
+    else:
+        print('Null Response.')
+
+    return response
+>>>>>>> bda140bc95a9c67d52e4336e32ec56c0612bd437
 
 
 if __name__ == "__main__":
     # charge_credit_card(20)
     # debit_bank_account(20)
     app.run(host='0.0.0.0', debug=True)
-    session.clear()
