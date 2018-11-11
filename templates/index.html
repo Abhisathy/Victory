@@ -15,13 +15,9 @@
 <body>
 
 <div class="container">
-  <form action="\userSignup" method="post">
+  <form action="/userSignup" method="post">
     <div class="row">
       <h4>Account</h4>
-      <div class="input-group input-group-icon">
-        <input type="text" placeholder="Username" name="username"/>
-        <div class="input-icon"><i class="fa fa-envelope"></i></div>
-      </div>
       <div class="input-group input-group-icon">
         <input type="text" placeholder="Full Name" name="full_name"/>
         <div class="input-icon"><i class="fa fa-user"></i></div>
@@ -82,16 +78,16 @@
         <label for="payment-method-paypal"> <span><i class="fa fa-cc-paypal"></i>Paypal</span></label>
       </div>
       <div class="input-group input-group-icon">
-        <input type="text" placeholder="Card Number"/>
+        <input type="text" placeholder="Card Number" name="card-number" />
         <div class="input-icon"><i class="fa fa-credit-card"></i></div>
       </div>
       <div class="col-half">
         <div class="input-group input-group-icon">
-          <input type="text" placeholder="Card CVC"/>
+          <input type="text" placeholder="Card CVC" name="pin" />
           <div class="input-icon"><i class="fa fa-user"></i></div>
         </div>
       </div>
-      <div class="col-half">
+      <!-- <div class="col-half">
         <div class="input-group">
           <select>
             <option>01 Jan</option>
@@ -102,7 +98,7 @@
             <option>2016</option>
           </select>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="row">
       <h4>Terms and Conditions</h4>

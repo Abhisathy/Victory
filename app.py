@@ -6,7 +6,7 @@ from passlib.hash import pbkdf2_sha256
 from flask import Flask, render_template, request, session, flash, url_for, redirect, make_response
 
 # Use a service account
-cred = credentials.Certificate('victory-222121-ccf57f90d574.json')
+cred = credentials.Certificate('victory-222122-8264af68af1c.json')
 firebase_admin.initialize_app(cred)
 
 # database connection
@@ -14,7 +14,7 @@ db = firestore.client()
 
 # flask connection
 app = Flask(__name__)
-app.secret_key = json.load(open('victory-222121-ccf57f90d574.json', 'r')).get('project_id', 'qwerty')
+app.secret_key = json.load(open('victory-222122-8264af68af1c.json', 'r')).get('project_id', 'qwerty')
 app.config['SESSION_TYPE'] = 'filesystem'
 
 
@@ -51,13 +51,27 @@ def user_signup():
     if request.method == 'POST':
         print(request.form)
         user_details = {
-            'username': request.form.get('username'),
+            'full_name' : request.form.get('full_name'),
+            'email': request.form.get('email'),
             'password': pbkdf2_sha256.hash(str(request.form.get('password'))),
-            'acc_type': request.form.get('acc_type')
+            'dob':str(request.form.get("date_month"))+'-'+request.form.get("date_dob")+'-'+request.form.get("date_year"),
+            'gender':request.form.get("gender"),
+            'acc_type': request.form.get('acc_type'),
+            'about':request.form.get('Highlight'),
+            'pay_mode':request.form.get('payment-method'),
+            'card_number':pbkdf2_sha256.hash(str(request.form.get('card-number'))),
+            'pin':pbkdf2_sha256.hash(str('pin'))
+            
         }
-        user = db.collection('users').document(request.form.get('acc_type'))
+        user = db.collection('users').document(request.form.get('email'))
         user.set(user_details)
-    return render_template('index.html')
+        session['username'] = user.get('email')
+        session['doctor'] = True
+        session['logged_in'] = True
+        msg = 'You have been successfully logged'
+        return redirect(url_for('dashboard', msg=msg))
+
+    return render_template('signup.html')
 
 
 @app.route('/jobPosting', methods=['GET', 'POST'])
