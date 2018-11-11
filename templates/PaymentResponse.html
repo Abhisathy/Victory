@@ -12,14 +12,14 @@
     <div class="row">
         {%if err %}
             <h1 style="color: black"><strong><center>Transaction Unsuccessful</center></strong></h1>
-            {{ msg }}
+            <p>{{ msg }}</p>
         {% else %}
             <h1 style="color: black"><strong><center>Transaction Successful!</center></strong></h1>
-            {{ msg }}
+            <p style="color:black">Transaction id : {{ msg }}</p>
         {% endif %}
     </div>
     <div class="row">
-        <button href={{ url_for('dashboard') }} class="btn">Back to dashboard</button>
+        <a href="{{ url_for('dashboard') }}"><button class="btn">Back to dashboard</button></a>
     </div>
 
 </body>
