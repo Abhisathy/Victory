@@ -51,6 +51,9 @@ def user_login():
             return redirect(url_for('dashboard', msg=msg))
     return render_template('login.html')
 
+@app.route('/signup', methods=['GET','POST'])
+def signup():
+    return render_template('signup.html')
 
 @app.route('/userSignup', methods=['GET', 'POST'])
 def user_signup():
@@ -64,6 +67,10 @@ def user_signup():
                                          request.form.get("dob_mm"),
                                          request.form.get("dob_yy")),
                 'gender': request.form.get("gender"),
+                'street': request.form.get("street"),
+                'city':request.form.get("city"),
+                'state':request.form.get("state"),
+                'zip': request.form.get("zip"),
                 'acc_type': request.form.get('acc_type'),
                 'about': request.form.get('Highlight'),
                 'pay_mode': request.form.get('payment-method'),
@@ -91,6 +98,7 @@ def job_posting():
             'mem_uploaded':session['username'],
             'title':request.form.get('title'),
             'description':request.form.get('description'),
+            'location':request.form.get('location'),
             'url': request.form.get('url')
         }
 
@@ -121,4 +129,8 @@ def testing():
 
 
 if __name__ == "__main__":
+<<<<<<< Updated upstream
     app.run(host='0.0.0.0', debug=True)
+=======
+    app.run(host='0.0.0.0',debug=True)
+>>>>>>> Stashed changes
