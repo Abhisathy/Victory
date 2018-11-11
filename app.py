@@ -385,23 +385,23 @@ def charge_credit_card(amount):
     settings.setting.append(duplicateWindowSetting)
 
     # setup individual line items
-    line_item_1 = apicontractsv1.lineItemType()
-    line_item_1.itemId = "12345"
-    line_item_1.name = "first"
-    line_item_1.description = "Here's the first line item"
-    line_item_1.quantity = "2"
-    line_item_1.unitPrice = "12.95"
-    line_item_2 = apicontractsv1.lineItemType()
-    line_item_2.itemId = "67890"
-    line_item_2.name = "second"
-    line_item_2.description = "Here's the second line item"
-    line_item_2.quantity = "3"
-    line_item_2.unitPrice = "7.95"
+    # line_item_1 = apicontractsv1.lineItemType()
+    # line_item_1.itemId = "12345"
+    # line_item_1.name = "first"
+    # line_item_1.description = "Here's the first line item"
+    # line_item_1.quantity = "2"
+    # line_item_1.unitPrice = "12.95"
+    # line_item_2 = apicontractsv1.lineItemType()
+    # line_item_2.itemId = "67890"
+    # line_item_2.name = "second"
+    # line_item_2.description = "Here's the second line item"
+    # line_item_2.quantity = "3"
+    # line_item_2.unitPrice = "7.95"
 
     # build the array of line items
-    line_items = apicontractsv1.ArrayOfLineItem()
-    line_items.lineItem.append(line_item_1)
-    line_items.lineItem.append(line_item_2)
+    # line_items = apicontractsv1.ArrayOfLineItem()
+    # line_items.lineItem.append(line_item_1)
+    # line_items.lineItem.append(line_item_2)
 
     # Create a transactionRequestType object and add the previous objects to it.
     transactionrequest = apicontractsv1.transactionRequestType()
@@ -412,7 +412,7 @@ def charge_credit_card(amount):
     transactionrequest.billTo = customerAddress
     transactionrequest.customer = customerData
     transactionrequest.transactionSettings = settings
-    transactionrequest.lineItems = line_items
+    # transactionrequest.lineItems = line_items
 
     # Assemble the complete transaction request
     createtransactionrequest = apicontractsv1.createTransactionRequest()
