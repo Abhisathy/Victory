@@ -115,6 +115,9 @@ def job_posting():
         return render_template('dashboard.html', msg='Job Posted')
     return render_template('dashboard.html', msg='Unable to post the job')
 
+@app.route('/Add_event')
+def add_event():
+    return ''
 
 @app.route('/logout')
 def logout():

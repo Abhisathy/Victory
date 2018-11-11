@@ -198,14 +198,21 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
     
     <!-- Right Column -->
     <div class="w3-col m2">
-      <div class="w3-card w3-round w3-red w3-hide-small">      
-            <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">How are you feeling today?</h6>
-              <p contenteditable="true" class="w3-border w3-padding">Feeling Blue</p>
-              <button type="button" class="w3-button w3-theme"><i class="fa fa-pencil"></i>  Post</button> 
-            </div>
+      <div class="w3-card w3-round w3-white w3-hide-small">
+            <form class="w3-container w3-padding" action="{{ url_for('add_event') }}">
+              <h4 class="w3-opacity">New Event!</h4>
+              <h6 class="w3-opacity">Event name:</h6>
+              <input type="text"  name="EventName">
+              <h6 class="w3-opacity">Event details:</h6>
+              <input type="text"  name="EventDetails">
+              <h6 class="w3-opacity">Event date:</h6>
+              <input type="date" class="w3-border w3-padding" name="date">
+              <br><br>
+              <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>  Post</button>
+            </form>
         </div>
     </div>
+
     <div class="w3-col m2">
       <div class="w3-card w3-round w3-white w3-center">
         <div class="w3-container">
