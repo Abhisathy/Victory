@@ -36,8 +36,8 @@ client = algoliasearch.Client(app.cfg.get('app_id'), app.cfg.get('admin_api_key'
 index = client.init_index('posts')
 
 
-@app.route('/', methods=['GET'])
-@app.route('/home', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     thought_data, event_data, algo_tot = [], [], []
     # Post and stuff
@@ -65,7 +65,7 @@ def home():
     return render_template('index.html', thought_data=reversed(thought_data), event_data=reversed(event_data))
 
 
-@app.route('/dashboard', methods=['GET'])
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     user_detail = {}
     msg = ""
@@ -198,9 +198,9 @@ def job_posting():
 
         job_details = {
             'mem_uploaded': full_name,
-            'title': request.form.get('title'),
-            'description': request.form.get('description'),
-            'url': request.form.get('url'),
+            'title': request.form.get('job_title'),
+            'description': request.form.get('job_desc'),
+            'url': request.form.get('job_url'),
             'date': datetime.today().strftime("%B %d, %Y")
         }
         jobs = db.collection('jobs').document(str(job_id))
