@@ -30,10 +30,16 @@ To get started with the development of dashboard:
 
 
 ## Deployment: 
-
+(Will be added soon)
 
 ## Built with:
 
 - [Python 3.6](https://www.python.org/downloads/release/python-360/)
 - [Flask Framework](http://flask.pocoo.org/)
+
+## Devpost Link:
+https://devpost.com/software/victory
+
+## Accompolishments:
+Awarded 'Best use of Algolia API' at our submission to the BostonHacks Fall 2018
 
